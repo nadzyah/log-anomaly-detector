@@ -9,7 +9,9 @@ Changes from the original project:
 - MongoDB as data source and  data sink support
 - Run analysis for specific host
 - UI and Prometeus support was removed
+
 ---
+
 **Table of Contents:**
 - [Installation](#installation)
   * [Step 1. Install the package](#step-1-install-the-package)
