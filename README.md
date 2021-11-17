@@ -34,6 +34,7 @@ $ sudo ./install.sh
 ## Step 2. Create a configuration file in yaml syntax
 The config variables are defined here: [https://log-anomaly-detector.readthedocs.io/en/latest/configinfo.html](https://log-anomaly-detector.readthedocs.io/en/latest/configinfo.html)
 Since it supports MongoDB and single-host running, there're some additional variables here:
+
 <table>
   <thead>
     <tr>
