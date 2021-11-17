@@ -12,7 +12,7 @@ Changes from the original project:
 ---
 **Table of Contents:**
 - [Installation](#installation)
-  * [Step 1. Install project](#step-1-install-project)
+  * [Step 1. Install the package](#step-1-install-the-package)
   * [Step 2. Create a configuration file in yaml syntax](#step-2-create-a-configuration-file-in-yaml-syntax)
   * [Step 3. Run it as a daemon](#step-3-run-it-as-a-daemon)
 - [How it works](#how-it-works)
@@ -22,11 +22,11 @@ Changes from the original project:
 This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 and MongoDB v5.0.3
 **Each MongoDB document with a log message MUST have the "Message" and "Hostname" fields.**
 
-## Step 1. Install project
+## Step 1. Install the package
 
 Copy the `install.sh` script and run it as sudo:
 ```bash
-$ wget git+http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/master/install.sh
+$ wget http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/master/install.sh
 $ chmod +x install.sh
 $ sudo ./install.sh
 ```

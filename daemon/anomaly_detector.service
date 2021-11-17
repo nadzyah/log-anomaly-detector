@@ -5,7 +5,7 @@ Description=Log Anomaly Detector service
 Type=forking
 User=lad
 ExecStart=/usr/bin/anomaly_detector_start
-ExecStop=/usr/bin/bash /usr/bin/anomaly_detector_stop
+ExecStop=/usr/bin/anomaly_detector_stop
 StandardError=file:/var/log/anomaly_detector/error.log
 
 [Install]

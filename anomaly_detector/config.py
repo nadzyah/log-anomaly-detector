@@ -144,7 +144,7 @@ class Configuration:
             with open(config_yaml) as f:
                 yaml_data = yaml.load(f, Loader=yaml.FullLoader)
                 self.set_property("MODEL_DIR",
-                                  "/opt/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
+                                  "/opt/anomaly_detector/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
                 for prop in self.__class__.__dict__.keys():
                     attr = getattr(self, prop)
                     if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
