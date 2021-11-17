@@ -71,8 +71,8 @@ Since it supports MongoDB and single-host running, there're some additional vari
      <td>MongoDB collection where anomaly logs from specified hosts will be pushed to</td>
   </tr>
   <tr>
-    <td>LOG_SOURCES</td>
-    <td>multiple MG_INPUT_COL +  multiple HOSTNAMES + multiple MG_TARGET_COL</td>
+     <td>LOG_SOURCES</td>
+     <td>multiple MG_INPUT_COL +  multiple HOSTNAMES + multiple MG_TARGET_COL</td>
   </tr>
   </tbody>
 </table>
