@@ -1,0 +1,22 @@
+STORAGE_DATASOURCE: "mg"
+STORAGE_DATASINK: "mg"
+MG_HOST: "172.17.18.83"
+MG_PORT: 27017
+MG_INPUT_DB: "logstoredb"
+MG_TARGET_DB: "anomalydb"
+LOG_SOURCES:
+  "network_logs":
+    HOSTNAMES:
+      - "cumulus"
+      - "EXOS-VM"
+      - "172.17.18.178"
+    MG_TARGET_COL: "network_anomaly"
+  "web_logs":
+    HOSTNAMES:
+      - "dataform"
+    MG_TARGET_COL: "web_anomaly"
+  "utm_logs":
+    HOSTNAMES:
+      - "172.17.18.56"
+      - "172.17.31.10"
+    MG_TARGET_COL: "utm_anomaly"

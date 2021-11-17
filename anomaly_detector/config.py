@@ -1,7 +1,7 @@
 """Configuration setting class."""
 
 import os
-import distutils
+import setuptools
 import logging
 import yaml
 
@@ -32,6 +32,10 @@ class Configuration:
     # One of the storage backends available in storage/ dir
     STORAGE_DATASOURCE = "local"
     STORAGE_DATASINK = "local"
+
+    # Process logs from specific host
+    LOGSOURCE_HOSTNAME = "localhost"
+
     # Location of local data
     # A directory where trained models will be stored
     MODEL_DIR = "./models/"
@@ -59,7 +63,7 @@ class Configuration:
     MODEL_STORE = ""
     MODEL_STORE_PATH = "anomaly-detection/models/"
     # Number of seconds specifying how far to the past to go to load log entries for training
-    TRAIN_TIME_SPAN = 900
+    TRAIN_TIME_SPAN = 2592000
     # Maximum number of entries for training loaded from backend storage
     TRAIN_MAX_ENTRIES = 315448
     # Number of SOM training iterations
@@ -118,20 +122,43 @@ class Configuration:
     OS_NAMESPACE = os.getenv("OPENSHIFT_BUILD_NAMESPACE", "localhost")
     prefix = "LAD"
 
-    def __init__(self, prefix=None, config_yaml=None):
+    # MongoDB config
+    MG_USE_SSL = False
+    MG_CERT_DIR = ""
+    MG_VERIFY_CERTS = False
+    MG_HOST = 'localhost'
+    MG_PORT = 27017
+    MG_USER = ""
+    MG_PASSWORD = ""
+    MG_INPUT_DB = ""
+    MG_INPUT_COL = ""
+    MG_TARGET_DB = ""
+    MG_TARGET_COL = ""
+
+
+    def __init__(self, prefix=None, config_yaml=None, config_dict=None):
         """Initialize configuration."""
         # For backward compatibility
         self.load_from_env()
-        if config_yaml is not None:
+        if config_yaml:   # is not None
             with open(config_yaml) as f:
                 yaml_data = yaml.load(f, Loader=yaml.FullLoader)
+                self.set_property("MODEL_DIR",
+                                  "/opt/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
                 for prop in self.__class__.__dict__.keys():
                     attr = getattr(self, prop)
                     if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
                         attr()
                     elif prop.isupper() and prop in list(yaml_data.keys()):
                         self.set_property(prop, yaml_data[prop])
-                        # self.__setattr__(prop, yaml_data[prop])
+            check_or_create_model_dir(self)
+        elif config_dict:   # is not None
+            for prop in self.__class__.__dict__.keys():
+                attr = getattr(self, prop)
+                if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
+                    attr()
+                elif prop.isupper() and prop in list(config_dict.keys()):
+                    self.set_property(prop, config_dict[prop])
         else:
             self.storage = None
             if prefix:
@@ -172,6 +199,6 @@ class Configuration:
                 if type(val) is bool:
                     setattr(self, prop, val)
                 else:
-                    setattr(self, prop, bool(distutils.util.strtobool(val)))
+                    setattr(self, prop, bool(setuptools.distutils.util.strtobool(val)))
             else:
                 raise Exception("Incorrect type for %s (%s) loaded " % (prop, typ))

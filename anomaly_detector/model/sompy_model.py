@@ -42,6 +42,8 @@ class SOMPYModel(BaseModel):
         dist_smallest = np.inf
         for x in range(self.model.shape[0]):
             for y in range(self.model.shape[1]):
+                if log.shape < self.model[x][y].shape:
+                    log = np.pad(log, [0, self.model[x][y].shape[0] - log.shape[0]])
                 dist = np.linalg.norm(self.model[x][y] - log)
                 if dist < dist_smallest:
                     dist_smallest = dist

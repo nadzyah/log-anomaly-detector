@@ -1,0 +1,18 @@
+#!/bin/bash
+
+python3 /opt/anomaly_detector/multihost_config.py
+
+export PATH=$HOME/.local/bin:$PATH
+
+FILE_NUM=$(ls /opt/anomaly_detector/configs/ | wc -l)
+
+realpath /opt/anomaly_detector/configs/* | xargs -L 1 -P $FILE_NUM log-anomaly-detector run --config-yaml &
+XARGS_PID=$!
+END=$((XARGS_PID+FILE_NUM))
+
+echo -n "" > /var/run/anomaly_detector/anomaly_detector.pid
+
+for ((i=$XARGS_PID; i<=$END; i++))
+do
+    echo "$i">>/var/run/anomaly_detector/anomaly_detector.pid
+done

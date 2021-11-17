@@ -1,6 +1,6 @@
 """Base model class."""
 from anomaly_detector.exception import ModelLoadException, ModelSaveException
-from sklearn.externals import joblib
+import joblib
 import os
 
 

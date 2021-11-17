@@ -4,6 +4,7 @@ from anomaly_detector.storage.local_storage import LocalStorageDataSource, Local
 from anomaly_detector.storage.local_directory_storage import LocalDirectoryStorageDataSource
 from anomaly_detector.storage.stdout_sink import StdoutSink
 from anomaly_detector.storage.es_storage import ElasticSearchDataSink, ElasticSearchDataSource
+from anomaly_detector.storage.mongodb_storage import MongoDBDataStorageSource, MongoDBDataSink
 import logging
 
 
@@ -60,13 +61,28 @@ class StorageCatalog(object):
         logging.info("save stdout datasink")
         return StdoutSink(config=config)
 
+    @classmethod
+    def _mongodb_datasource_api(cls, config):
+        """MongoDB data source API"""
+        logging.info("fetching mongodb datasource")
+        return MongoDBDataStorageSource(config=config)
+
+    @classmethod
+    def _mongodb_datasink_api(cls, config):
+        """MongoDB data sink API"""
+        logging.info("fetching mongodb datasink")
+        return MongoDBDataSink(config=config)
+
     _class_method_choices = {'local.sink': _localfile_datasink_api,
                              'local.source': _localfile_datasource_api,
                              'es.sink': _elasticsearch_datasink_api,
                              'es.source': _elasticsearch_datasource_api,
                              'kafka.sink': _kafka_datasink_api,
                              'localdir.source': _localdir_datasource_api,
-                             'stdout.sink': _stdout_datasink_api}
+                             'stdout.sink': _stdout_datasink_api,
+                             'mg.source': _mongodb_datasource_api,
+                             'mg.sink': _mongodb_datasink_api,
+                             }
 
     def get_storage_api(self):
         """Storage api."""
