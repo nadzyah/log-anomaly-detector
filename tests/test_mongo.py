@@ -22,10 +22,13 @@ def config():
 
 def test_mg(config):
     """Test ability to read data from MongoDB"""
-    mg_attr = MGStorageAttribute(2592000, 90000)
+    mg_attr = MGStorageAttribute(86400, 90000)
     mg = MongoDBDataStorageSource(config)
 
-    assert len(mg.retrieve(mg_attr)[0]) > 0
+    data = mg.retrieve(mg_attr)
+    print(data[0], data[1])
+
+    assert len(data[0]) > 0
 
 def test_message_key(config):
     """Test if it can get message attribute from data"""

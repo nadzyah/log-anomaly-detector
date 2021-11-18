@@ -23,7 +23,7 @@ Changes from the original project:
 # Installation
 This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 and MongoDB v5.0.3.
 
-**Each MongoDB document with a log message MUST have the "Message" and "Hostname" fields.**
+**Each MongoDB document with a log message MUST have the "message", "Hostname" and "EventTime" fields (case sensitive).**
 
 ## Step 1. Install the package
 

@@ -81,10 +81,9 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
          now = datetime.datetime.now()
 
          mg_data = mg_input_db[self.config.MG_INPUT_COL]
-         mg_data.update_many({}, {"$rename": {'Message': 'message'}})
 
          query = {
-             'EventReceivedTime':  {
+             'EventTime':  {
                  '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
                  #'$gte': now - datetime.timedelta(days=30),
                  '$lt': now
