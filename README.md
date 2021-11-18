@@ -144,7 +144,7 @@ $ sudo systemctl enable anomaly_detector.service
 $ sudo systemctl start anomaly_detector.service
 $ sudo systemctl status anomaly_detector
 ```
-For process monitoring, you check `/var/log/anomaly_detector/error.log` file.
+For process monitoring, check `/var/log/anomaly_detector/error.log` file.
 
 # How it works
 
