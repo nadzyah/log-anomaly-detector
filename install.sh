@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Installing pip3"
+sudo apt-get update
+sudo apt-get install python3-pip
+
 echo "Installing the LAD package"
 sudo pip3 install git+http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector.git
 
