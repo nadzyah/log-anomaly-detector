@@ -71,7 +71,7 @@ Since it supports MongoDB and single-host running, there're some additional vari
      <td>MongoDB collection where logs from specified hosts are stored</td>
   </tr>
   <tr>
-     <td>MG_TARGET_LOG</td>
+     <td>MG_TARGET_COL</td>
      <td>MongoDB collection where anomaly logs from specified hosts will be pushed to</td>
   </tr>
   <tr>
