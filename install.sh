@@ -13,7 +13,7 @@ chown lad:lad /var/run/anomaly_detector
 echo "Creating log directory"
 mkdir /var/log/anomaly_detector/
 touch /var/log/anomaly_detector/error.log
-chown lad:lad /var/log/anomaly_detector/error.log
+chown -R lad:lad /var/log/anomaly_detector/
 
 echo "Creating /opt/anomaly_detector/ directory"
 mkdir /opt/anomaly_detector/
