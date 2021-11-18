@@ -2,13 +2,13 @@
 
 **This project is a fork of [https://github.com/AICoE/log-anomaly-detector/](https://github.com/AICoE/log-anomaly-detector/)**
 
-Log anomaly detector is an open source project that can connect to streaming sources and produce predictions of abnormal log lines. Internally it uses unsupervised machine learning. We incorporate a number of machine learning models to achieve this result. In addition it includes a human in the loop feedback system.
+Log anomaly detector is an open-source project that can connect to streaming sources and produce predictions of abnormal log lines. Internally it uses unsupervised machine learning. We incorporate several machine learning models to achieve this result. In addition, it includes a human in the loop feedback system.
 
 Changes from the original project:
 - Python v3.8 support
-- MongoDB as data source and  data sink support
-- Run analysis for specific host
-- UI and Prometeus support was removed
+- MongoDB as a data source and  data sink support
+- Run analysis for a specific host
+- UI and Prometheus support was removed
 
 ---
 
@@ -142,11 +142,12 @@ Enable and start the service.
 ```bash
 $ sudo systemctl enable anomaly_detector.service
 $ sudo systemctl start anomaly_detector.service
+$ sudo systemctl status anomaly_detector
 ```
-Optionally check that it's running: `sudo systemctl status anomaly_detector`
+For process monitoring, you check `/var/log/anomaly_detector/error.log` file.
 
 # How it works
 
 Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/latest/model.html](https://log-anomaly-detector.readthedocs.io/en/latest/model.html)
 
-The daemon itself creates *n* parallel processes, where *n* is the number of hosts. Each process retrieves logs in the last 30 days for specified host from the collection and train the model. Then it periodically checks the db for new log entries. If the new entry appears, the process checks if it's an anomaly. If the log message is an anomaly, it is pushed to the collection in the target database.
+The daemon itself creates *n* parallel processes, where *n* is the number of hosts. Each process retrieves logs in the last 30 days for a specified host from the collection and trains the model. Then it periodically checks the DB for new log entries. If the new entry appears, the process checks if it's an anomaly. If the log message is an anomaly, it is pushed to the collection in the target database.
