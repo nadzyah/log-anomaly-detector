@@ -55,6 +55,26 @@ Since it supports MongoDB and single-host running, there're some additional vari
      <td>MongoDB server port</td>
   </tr>
   <tr>
+     <td>MG_USER</td>
+     <td>MongoDB username</td>
+  </tr>
+  <tr>
+     <td>MG_PASSWORD</td>
+     <td>MongoDB password</td>
+  </tr>
+  <tr>
+     <td>MG_USE_SSL</td>
+     <td>Boolean variable that defines if SSL should be used for connection</td>
+  </tr>
+  <tr>
+     <td>MG_CERT_DIR</td>
+     <td>Server certificate directory</td>
+  </tr>
+  <tr>
+     <td>MG_VERIFY_CERT</td>
+     <td>Boolean variable that defines if server's certificate should be verified</td>
+  </tr>
+  <tr>
      <td>MG_INPUT_DB</td>
      <td>MongoDB database where log entries will be pulled from</td>
   </tr>
