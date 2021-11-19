@@ -72,7 +72,6 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
         """Initialize mongodb storage backend."""
         self.config = config
         MongoDBStorage.__init__(self, config)
-        self._connect()
 
     def retrieve(self, storage_attribute: MGStorageAttribute):
          """Retrieve data from MongoDB."""

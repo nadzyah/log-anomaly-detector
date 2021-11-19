@@ -75,7 +75,7 @@ class Configuration:
     # Set the length of the encoded log vectors
     TRAIN_VECTOR_LENGTH = 25
     # number of jobs to use to parallelize the training, should match cpu resource limit
-    PARALLELISM = 2
+    PARALLELISM = 1
 
     # Threshold used to decide whether an entry is an anomaly
     INFER_ANOMALY_THRESHOLD = 3.1
