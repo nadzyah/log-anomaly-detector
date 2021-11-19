@@ -2,7 +2,7 @@
 
 python3 /opt/anomaly_detector/multihost_config.py
 
-export PATH=$HOME/.local/bin:$PATH
+echo -n "" > /var/log/anomaly_detector/error.log
 
 FILE_NUM=$(ls /opt/anomaly_detector/configs/ | wc -l)
 

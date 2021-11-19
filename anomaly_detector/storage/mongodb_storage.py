@@ -90,13 +90,16 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
              'Hostname': self.config.LOGSOURCE_HOSTNAME
          }
 
-         mg_data = mg_data.find(query).sort("datefield", -1)
+         mg_data = mg_data.find(query).sort("EventTime", -1)
          _LOGGER.info(
             "Reading %d log entries in last %d seconds from %s",
              mg_data.count(True),
              storage_attribute.time_range,
              self.MG_URI,
          )
+
+         self.mg.close()
+
          if not mg_data.count:   # if it equials 0:
              return pandas.Dataframe(), mg_data
 
