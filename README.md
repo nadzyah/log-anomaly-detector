@@ -23,7 +23,7 @@ Changes from the original project:
 # Installation
 This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 and MongoDB v5.0.3.
 
-**Each MongoDB document with a log message MUST have the "message", "Hostname" and "EventTime" fields (case sensitive).**
+**Each MongoDB document with a log message MUST have the "message" fields (case sensitive).**
 
 ## Step 1. Install the package
 
@@ -97,6 +97,14 @@ Since it supports MongoDB and single-host running, there're some additional vari
   <tr>
      <td>LOG_SOURCES</td>
      <td>multiple MG_INPUT_COL +  multiple HOSTNAMES + multiple MG_TARGET_COL</td>
+  </tr>
+  <tr>
+     <td>HOSTNAME_INDEX</td>
+     <td>The name of the index where hostname is specified</td>
+  </tr>
+  <tr>
+     <td>DATETIME_INDEX</td>
+     <td>The name of the index where event time is specified</td>
   </tr>
   </tbody>
 </table>

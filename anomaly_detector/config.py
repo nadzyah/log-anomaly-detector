@@ -134,6 +134,8 @@ class Configuration:
     MG_INPUT_COL = ""
     MG_TARGET_DB = ""
     MG_TARGET_COL = ""
+    HOSTNAME_INDEX = ""
+    DATETIME_INDEX = ""
 
 
     def __init__(self, prefix=None, config_yaml=None, config_dict=None):

@@ -82,12 +82,12 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
          mg_data = mg_input_db[self.config.MG_INPUT_COL]
 
          query = {
-             'EventTime':  {
+             self.config.DATETIME_INDEX:  {
                  '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
                  #'$gte': now - datetime.timedelta(days=30),
                  '$lt': now
              },
-             'Hostname': self.config.LOGSOURCE_HOSTNAME
+             self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
          }
 
          mg_data = mg_data.find(query).sort("EventTime", -1)
