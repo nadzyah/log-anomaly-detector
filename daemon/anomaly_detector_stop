@@ -2,3 +2,5 @@
 
 cat /var/run/anomaly_detector/anomaly_detector.pid | xargs -L 1 kill 
 rm /var/run/anomaly_detector/anomaly_detector.pid
+rm /opt/anomaly_detector/configs/*.yaml
+rm -rf /opt/anomaly_detector/models/*

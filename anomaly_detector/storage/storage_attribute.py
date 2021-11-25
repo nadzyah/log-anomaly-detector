@@ -67,3 +67,13 @@ class MGStorageAttribute(DefaultStorageAttribute):
     def time_range(self, x):
         """Time range for query."""
         self.__time_range = x
+
+    @property
+    def number_of_entries(self):
+        """Max number of entries for query."""
+        return self.__number_of_entries
+
+    @number_of_entries.setter
+    def number_of_entries(self, x):
+        """Time range for query and max number of entries."""
+        self.__number_of_entries = x

@@ -84,14 +84,14 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
 
          query = {
              self.config.DATETIME_INDEX:  {
-                 '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
-                 #'$gte': now - datetime.timedelta(days=30),
+                 #'$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                 '$gte': now - datetime.timedelta(days=30),
                  '$lt': now
              },
              self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
          }
 
-         mg_data = mg_data.find(query).sort("EventTime", -1)
+         mg_data = mg_data.find(query).sort(self.config.DATETIME_INDEX, -1).limit(storage_attribute.number_of_entries)
          _LOGGER.info(
             "Reading %d log entries in last %d seconds from %s",
              mg_data.count(True),
@@ -104,7 +104,7 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
          if not mg_data.count:   # if it equials 0:
              return pandas.Dataframe(), mg_data
 
-         mg_data = dumps(mg_data)
+         mg_data = dumps(mg_data, sort_keys=False)
 
          mg_data_normalized = pandas.DataFrame(pandas.json_normalize(json.loads(mg_data)))
          _LOGGER.info("%d logs loaded in from last %d seconds", len(mg_data_normalized),
