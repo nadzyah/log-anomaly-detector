@@ -13,6 +13,7 @@ from anomaly_detector.storage.storage_attribute import MGStorageAttribute
 from anomaly_detector.storage.storage_source import StorageSource
 from anomaly_detector.storage.storage_sink import StorageSink
 
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -137,6 +138,8 @@ class MongoDBDataSink(StorageSink, DataCleaner, MongoDBStorage):
                 del x['predictor_namespace']
                 del x['inference_batch_id']
                 del x['elast_alert']
+                if isinstance(x[self.config.DATETIME_INDEX], dict):
+                    x[self.config.DATETIME_INDEX] = datetime.datetime.fromtimestamp(x[self.config.DATETIME_INDEX]["$date"] / 1e3)
                 normalized_data.append(x)
 
         if normalized_data:

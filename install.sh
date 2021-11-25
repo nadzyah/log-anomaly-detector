@@ -8,7 +8,8 @@ echo "Installing the LAD package"
 sudo pip3 install git+http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector.git
 
 echo "Creating lad user"
-adduser --disabled-password --gecos "" lad
+#adduser --disabled-password --gecos "" lad
+useradd --system lad
 
 echo "Creating /var/run/anomaly_detector/ directory"
 mkdir /var/run/anomaly_detector
