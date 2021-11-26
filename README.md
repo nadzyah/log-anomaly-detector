@@ -26,7 +26,7 @@ Changes from the original project:
 # Installation
 This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 and MongoDB v5.0.3.
 
-**Each MongoDB document with a log message MUST have the "message" fields (case sensitive).**
+**Each MongoDB document with a log message MUST have the "message" field (case sensitive).**
 
 ## Step 1. Install the package
 
