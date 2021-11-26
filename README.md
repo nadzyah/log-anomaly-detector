@@ -168,7 +168,7 @@ For process monitoring, check `/var/log/anomaly_detector/error.log` file.
 	
 ## Failed to start after reboot
 
-It usually happens because `/var/run/anomaly_detector/` directory was removed after reboot.
+It usually happens because `/var/run/anomaly_detector/` directory is removed after reboot.
 
 To fix it:
 1. Create the `/var/run/anomaly_detector/` directory:
