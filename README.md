@@ -137,7 +137,7 @@ LOG_SOURCES:
       - "172.17.31.10"
     MG_TARGET_COL: "utm_anomaly"
 ```
-In this example MongoDB server has 172.17.18.83 IP address and 27017 port. It has two databases:
+In this example, MongoDB server has 172.17.18.83 IP address and 27017 port. It has two databases:
 - *logstoredb*, where the original log entries are stored
 - *anomalydb*, where the anomaly log files will be pushed to.
 
@@ -172,10 +172,13 @@ It usually happens because `/var/run/anomaly_detector/` directory is removed aft
 
 To fix it:
 1. Create the `/var/run/anomaly_detector/` directory:
+
 	```bash
 	$ sudo mkdir /var/run/anomaly_detector/
 	```
+
 2. Transfer the ownership to the lad user:
+
 	```bash
 	$ sudo chown lad:lad /var/run/anomaly_detector/
 	```
