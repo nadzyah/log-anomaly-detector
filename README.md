@@ -1,3 +1,4 @@
+
 # Log Anomaly Detector
 
 **This project is a fork of [https://github.com/AICoE/log-anomaly-detector/](https://github.com/AICoE/log-anomaly-detector/)**
@@ -18,6 +19,8 @@ Changes from the original project:
   * [Step 2. Create a configuration file in yaml syntax](#step-2-create-a-configuration-file-in-yaml-syntax)
   * [Step 3. Run it as a daemon](#step-3-run-it-as-a-daemon)
 - [How it works](#how-it-works)
+- [Troubleshooting](#troubleshooting)
+  * [Failed to start after reboot](#failed-to-start-after-reboot)
 
 
 # Installation
@@ -118,17 +121,17 @@ MG_PORT: 27017
 MG_INPUT_DB: "logstoredb"
 MG_TARGET_DB: "anomalydb"
 LOG_SOURCES:
-  "network_logs":
+  network_logs:
     HOSTNAMES:
       - "cumulus"
       - "EXOS-VM"
       - "172.17.18.178"
     MG_TARGET_COL: "network_anomaly"
-  "web_logs":
+  web_logs:
     HOSTNAMES:
       - "dataform"
     MG_TARGET_COL: "web_anomaly"
-  "utm_logs":
+  utm_logs:
     HOSTNAMES:
       - "172.17.18.56"
       - "172.17.31.10"
@@ -152,10 +155,28 @@ $ sudo systemctl enable anomaly_detector.service
 $ sudo systemctl start anomaly_detector.service
 $ sudo systemctl status anomaly_detector
 ```
-For process monitoring, check `/var/log/anomaly_detector/error.log` file.
 
 # How it works
 
 Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/latest/model.html](https://log-anomaly-detector.readthedocs.io/en/latest/model.html)
 
 The daemon itself creates *n* parallel processes, where *n* is the number of hosts. Each process retrieves logs in the last 30 days for a specified host from the collection and trains the model. Then it periodically checks the DB for new log entries. If the new entry appears, the process checks if it's an anomaly. If the log message is an anomaly, it is pushed to the collection in the target database.
+
+# Troubleshooting
+
+For process monitoring, check `/var/log/anomaly_detector/error.log` file.
+	
+## Failed to start after reboot
+
+It usually happens because `/var/run/anomaly_detector/` directory was removed after reboot.
+
+To fix it:
+1. Create the `/var/run/anomaly_detector/` directory:
+	```bash
+	$ sudo mkdir /var/run/anomaly_detector/
+	```
+2. Transfer the ownership to the lad user:
+	```bash
+	$ sudo chown lad:lad /var/run/anomaly_detector/
+	```
+

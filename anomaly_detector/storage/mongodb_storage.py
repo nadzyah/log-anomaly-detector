@@ -84,8 +84,8 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
 
          query = {
              self.config.DATETIME_INDEX:  {
-                 #'$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
-                 '$gte': now - datetime.timedelta(days=30),
+                 '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                 #'$gte': now - datetime.timedelta(days=30),
                  '$lt': now
              },
              self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
