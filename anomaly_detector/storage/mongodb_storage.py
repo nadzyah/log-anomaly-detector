@@ -82,14 +82,23 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
 
          mg_data = mg_input_db[self.config.MG_INPUT_COL]
 
-         query = {
-             self.config.DATETIME_INDEX:  {
-                 '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
-                 #'$gte': now - datetime.timedelta(days=30),
-                 '$lt': now
-             },
-             self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
-         }
+         if self.config.LOGSOURCE_HOSTNAME != 'localhost':
+             query = {
+                 self.config.DATETIME_INDEX:  {
+                     '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                     #'$gte': now - datetime.timedelta(days=30),
+                     '$lt': now
+                 },
+                 self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
+             }
+         else:
+             query = {
+                 self.config.DATETIME_INDEX:  {
+                     '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                     #'$gte': now - datetime.timedelta(days=30),
+                     '$lt': now
+                 }
+             }
 
          mg_data = mg_data.find(query).sort(self.config.DATETIME_INDEX, -1).limit(storage_attribute.number_of_entries)
          _LOGGER.info(

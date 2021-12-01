@@ -1,4 +1,7 @@
 """Test MongoDB module to read data."""
+#import sys
+#sys.path.append('/home/nadzya/Apps/log-anomaly-detector/')
+
 import pytest
 from anomaly_detector.storage.mongodb_storage import MongoDBDataStorageSource
 from anomaly_detector.config import Configuration
@@ -12,9 +15,11 @@ def config():
     cfg.MG_HOST = "172.17.18.83"
     cfg.MG_PORT = 27017
     cfg.MG_CERT_DIR = ""
-    cfg.MG_INPUT_DB = "logstoredb"
-    cfg.MG_INPUT_COL = "network_logs"
-    cfg.MG_LOGSOURCE_HOSTNAME = "cumulus"
+    cfg.MG_INPUT_DB = "fluentdb"
+    cfg.MG_INPUT_COL = "web_logs"
+    cfg.HOSTNAME_INDEX = "hostname"
+    cfg.DATETIME_INDEX = "timestamp"
+    cfg.LOGSOURCE_HOSTNAME = "data.solidex.by"
     cfg.MG_USER = ''
     cfg.MG_PASSWORD = ''
     return cfg
@@ -38,17 +43,8 @@ def test_message_key(config):
 
     assert len(mg_data_msg['message']) > 0
 
-def test_data_not_str_type():
+def test_data_not_str_type(config):
     """Test if data from mongodb is in json-object format, not str"""
-    config = Configuration()
-    config.MG_HOST = "172.17.18.83"
-    config.MG_PORT = 27017
-    config.MG_CERT_DIR = ""
-    config.MG_INPUT_DB = "logstoredb"
-    config.MG_INPUT_COL = "web_logs"
-    config.MG_USER = ''
-    config.MG_PASSWORD = ''
-
     mg_attr = MGStorageAttribute(2592000, 900000)
     mg = MongoDBDataStorageSource(config)
     mg_data = mg.retrieve(mg_attr)[1]
