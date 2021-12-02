@@ -137,6 +137,11 @@ class Configuration:
     HOSTNAME_INDEX = ""
     DATETIME_INDEX = ""
 
+    # Aggregation
+    AGGR_TIME_SPAN = 86400
+    AGGR_MAX_ENTRIES = 315448
+    AGGR_EPS = 0.5
+    AGGR_MIN_SAMPLES = 5
 
     def __init__(self, prefix=None, config_yaml=None, config_dict=None):
         """Initialize configuration."""
@@ -145,8 +150,9 @@ class Configuration:
         if config_yaml:   # is not None
             with open(config_yaml) as f:
                 yaml_data = yaml.load(f, Loader=yaml.FullLoader)
-                self.set_property("MODEL_DIR",
-                                  "/opt/anomaly_detector/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
+                if "LOGSOURCE_HOSTNAME" in yaml_data.keys():
+                    self.set_property("MODEL_DIR",
+                                      "/opt/anomaly_detector/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
                 for prop in self.__class__.__dict__.keys():
                     attr = getattr(self, prop)
                     if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
