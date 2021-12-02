@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/home/nadzya/Apps/log-anomaly-detector/')
-
 import pandas as pd
 import numpy as np
 from sklearn.cluster import DBSCAN
