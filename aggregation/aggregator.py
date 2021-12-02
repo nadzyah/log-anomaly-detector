@@ -125,7 +125,7 @@ def write_logs_to_mg(config, logs):
     col.insert_many(logs)
 
 def main():
-    configs = get_configs("/home/nadzya/Apps/log-anomaly-detector/config_files/aggr_conf.yaml")
+    configs = get_configs("/opt/anomaly_detector/aggr_conf.yaml")
     for config in configs:
         logs_df, df_json = get_anomaly_logs(config)
         if df_json:
