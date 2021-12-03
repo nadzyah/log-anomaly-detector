@@ -36,3 +36,14 @@ chmod +x /usr/bin/anomaly_detector_start
 wget "http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/master/daemon/anomaly_detector_stop" -O /usr/bin/anomaly_detector_stop
 chmod +x /usr/bin/anomaly_detector_stop
 wget "http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/master/daemon/anomaly_detector.service" -O /lib/systemd/system/anomaly_detector.service
+
+echo "Schedule cron to restart anomaly_detector service every midnight"
+echo "0  0  * * * root  service anomaly_detector restart" >> /etc/crontab
+
+echo "Adding aggregation script"
+wget "http://git:3000/nhryshalevich/log-anomaly-detector/raw/master/aggregation/aggregator.py" -O /opt/anomaly_detector/aggregator.py
+wget "http://git:3000/nhryshalevich/log-anomaly-detector/raw/master/aggregation/aggregator.yaml" -O /opt/anomaly_detector/aggregator.yaml
+chown lad:lad /opt/anomaly_detector/aggragator.*
+echo "Schedule cron to run aggregation script every day at 3:00 p.m."
+echo "0  15 * * * lad   /usr/bin/python3 /opt/anomaly_detector/aggregator.py" >> /etc/crontab
+

@@ -148,7 +148,82 @@ The logstoredb has three collections:
 
 You can modify this file, keeping its stricture.
 
-## Step 3. Run it as a daemon
+## Step 3. Configure log aggregation
+
+We also provide a script to aggregate anomaly logs. To configure it open `/opt/anomaly_detector/aggregator.yaml` file. See the example below:
+
+```yaml
+DATETIME_INDEX: timestamp
+HOSTNAME_INDEX: hostname
+MG_HOST: 172.17.18.83
+MG_PORT: 27017
+MG_INPUT_DB: anomalydb
+MG_INPUT_COLS: 
+  - web_anomaly
+  - utm_anomaly
+  - network_anomaly
+MG_TARGET_COLS: 
+  - web_aggregated
+  - utm_aggregated
+  - network_aggregated
+MG_TARGET_DB: anomalydb
+STORAGE_DATASINK: mg
+STORAGE_DATASOURCE: mg
+AGGR_TIME_SPAN: 86400
+AGGR_EPS: 0.01
+AGGR_MIN_SAMPLES: 2
+AGGR_VECTOR_LENGTH: 25
+AGGR_WINDOW: 5
+```
+
+You must be already familiar with some of the options. See the description to the additional ones:
+
+<table>
+  <thead>
+    <tr>
+      <th>Config field</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>MG_INPUT_COLS</td>
+    <td>MongoDB collections, where the anomaly logs are located</td>
+  </tr>
+  <tr>
+    <td>MG_TARGET_COLS</td>
+    <td>MongoDB collections, where the aggregated logs should be pushed to</td>
+  </tr>
+  <tr>
+    <td>AGGR_TIME_SPAN</td>
+    <td>Number of seconds specifying how far to the past to go to load log entries for aggregation</td>
+  </tr>
+  <tr>
+    <td>AGGR_EPS</td>
+    <td>The same as "eps" parameter in DBSCAN algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+  </tr>
+  <tr>
+    <td>AGGR_MIN_SAMPLES</td>
+    <td>The same as "min_samples" parameter in DBSCAN algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+  </tr>
+  tr>
+    <td>AGGR_VECTOR_LENGTH</td>
+    <td>The same as "size" parameter in Word2Vec algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+  </tr>
+  <tr>
+    <td>AGGR_WINDOW</td>
+    <td>The same as "window" parameter in Word2Vec algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+  </tr>
+  </tbody>
+</table>
+
+For example, in the config file all the anomaly logs from `web_anomaly` collection will be pushed to `web_aggregated` collection, thus it's important to follow the input-target order.
+
+The aggregation script is run every day at 3:00 p.m. You can change the time in the `/etc/crontab` file.
+
+If you want to aggregate logs right now, execute the next command: `sudo python3 /opt/anomaly_detector/aggregator.py`
+
+## Step 4. Run it as a daemon
 Enable and start the service.
 ```bash
 $ sudo systemctl enable anomaly_detector.service
@@ -158,9 +233,65 @@ $ sudo systemctl status anomaly_detector
 
 # How it works
 
+## Log anomaly detector
+
 Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/latest/model.html](https://log-anomaly-detector.readthedocs.io/en/latest/model.html)
 
 The daemon itself creates *n* parallel processes, where *n* is the number of hosts. Each process retrieves logs in the last 30 days for a specified host from the collection and trains the model. Then it periodically checks the DB for new log entries. If the new entry appears, the process checks if it's an anomaly. If the log message is an anomaly, it is pushed to the collection in the target database.
+
+Also the LAD process is restarted to train the model using new logs every day at midnight.
+
+## Anomaly log aggregator
+
+Each message is represeted as a vector with the usage of Word2Vec library. Then we apply DBSCAN to find similar logs.
+
+Aggregated logs are pushed to the MongoDB in the next format:
+```json
+{
+  "message": "Aggeregated *** log message",
+  "total_logs": 3,
+  "timestamp": {
+    "$date": "1970-01-01T00:00:00.000tZ"
+  },
+  "original_messages": [
+    "Aggregated 1 log message",
+    "Aggregated 2 log message",
+    "Aggregated 3 log message"
+  ]
+}
+```
+Parameters explanation:
+- all different words and parameters are substituted with `***`. 
+- original_messages -- the list of the original anomaly logs. 
+- timestamp is calculated as the mean of all timestamps of the original logs.
+- total_logs -- the number of all the original logs
+
+The real example:
+```json
+{
+  "_id": {
+    "$oid": "61a9dae97a2eb3c99ac49d16"
+  },
+  "message": "<86>Dec 1 *** cumulus *** pam_unix(cron:session): session opened for user root by (uid=0)",
+  "total_logs": 11,
+  "timestamp": {
+    "$date": "2021-12-01T16:05:26.953Z"
+  },
+  "original_messages": [
+    "<86>Dec  1 17:15:01 cumulus CRON[25368]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 17:00:01 cumulus CRON[25252]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 16:45:01 cumulus CRON[25136]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 16:30:01 cumulus CRON[25019]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 16:17:01 cumulus CRON[24915]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 16:15:01 cumulus CRON[24880]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 16:00:01 cumulus CRON[24765]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 15:45:01 cumulus CRON[24649]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 15:30:01 cumulus CRON[24533]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 11:30:01 cumulus CRON[22581]: pam_unix(cron:session): session opened for user root by (uid=0)",
+    "<86>Dec  1 11:17:01 cumulus CRON[22478]: pam_unix(cron:session): session opened for user root by (uid=0)",
+  ]
+}
+```
 
 # Troubleshooting
 

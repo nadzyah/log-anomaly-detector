@@ -126,7 +126,7 @@ def write_logs_to_mg(config, logs):
     col.insert_many(logs)
 
 def main():
-    configs = get_configs("aggregator.yaml")
+    configs = get_configs("/opt/anomaly_detector/aggregator.yaml")
     for config in configs:
         logs_df, logs_json = get_anomaly_logs(config)
         df = pd.DataFrame(logs_df["message"])
