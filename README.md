@@ -206,7 +206,7 @@ You must be already familiar with some of the options. See the description to th
     <td>AGGR_MIN_SAMPLES</td>
     <td>The same as "min_samples" parameter in DBSCAN algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
   </tr>
-  tr>
+  <tr>
     <td>AGGR_VECTOR_LENGTH</td>
     <td>The same as "size" parameter in Word2Vec algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
   </tr>
