@@ -110,7 +110,7 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
 
          self.mg.close()
 
-         if not mg_data.count:   # if it equials 0:
+         if not mg_data.count():   # if it equials 0:
              return pandas.Dataframe(), mg_data
 
          mg_data = dumps(mg_data, sort_keys=False)

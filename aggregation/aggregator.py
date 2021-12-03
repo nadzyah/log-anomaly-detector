@@ -1,16 +1,18 @@
+import sys
+sys.path.append('/home/nadzya/Apps/log-anomaly-detector/')
+
 import pandas as pd
 import numpy as np
 from sklearn.cluster import DBSCAN
 import json
 import datetime
-from pymongo import MongoClient
 import yaml
+from pymongo import MongoClient
 
 from anomaly_detector.storage.mongodb_storage import MongoDBStorage, MongoDBDataStorageSource
 from anomaly_detector.config import Configuration
 from anomaly_detector.storage.storage_attribute import MGStorageAttribute
-from anomaly_detector.core.encoder import LogEncoderCatalog
-from anomaly_detector.storage.storage import DataCleaner
+from anomaly_detector.model.w2v_model import W2VModel
 
 def get_configs(path_to_yaml_file):
     """Initialize configuration object from the yaml file"""
@@ -34,10 +36,9 @@ def get_anomaly_logs(config):
 
 def log2vec(config, log_df):
     """Encode log messages to vectors with Word2Vec model usage"""
-    encoder = LogEncoderCatalog('w2v_encoder', config)
-    encoder.build()
-    encoder.encode_log(log_df)
-    return encoder.one_vector(log_df)
+    w2v = W2VModel(config)
+    w2v.create(log_df, config.AGGR_VECTOR_LENGTH, config.AGGR_WINDOW)
+    return w2v.one_vector(log_df)
 
 def set_cluster_labels(config, vectors, orig_df):
     """Clusterize logs and add cluster label to the dataframe.
@@ -125,13 +126,15 @@ def write_logs_to_mg(config, logs):
     col.insert_many(logs)
 
 def main():
-    configs = get_configs("/opt/anomaly_detector/aggr_conf.yaml")
+    configs = get_configs("aggregator.yaml")
     for config in configs:
-        logs_df, df_json = get_anomaly_logs(config)
-        if df_json:
-            vectors = log2vec(config, logs_df)
-            clusters = set_cluster_labels(config, vectors, logs_df)
-            aggr_logs = aggregate_logs(logs_df, df_json, clusters)
+        logs_df, logs_json = get_anomaly_logs(config)
+        df = pd.DataFrame(logs_df["message"])
+        if logs_json:
+            vectors = log2vec(config, df)
+            clusters = set_cluster_labels(config, vectors, df)
+            logs_df["clusters"] = clusters
+            aggr_logs = aggregate_logs(df, logs_json, clusters)
             aggr_json = aggregated_logs_to_json(config, aggr_logs, logs_df)
             write_logs_to_mg(config, aggr_json)
 

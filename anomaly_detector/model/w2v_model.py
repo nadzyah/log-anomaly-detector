@@ -32,6 +32,7 @@ class W2VModel(BaseModel):
                 if not self.config:
                     self.model[col] = Word2Vec([list(words[col])], min_count=1, size=vector_length, window=window_size)
                 else:
+                    #print(list(words[col]))
                     self.model[col] = Word2Vec([list(words[col])], min_count=self.config.W2V_MIN_COUNT,
                                                size=vector_length,
                                                window=window_size, iter=self.config.W2V_ITER,

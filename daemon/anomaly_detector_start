@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 /opt/anomaly_detector/multihost_config.py
+python3 /opt/anomaly_detector/multihost.py
 
 echo -n "" > /var/log/anomaly_detector/error.log
 

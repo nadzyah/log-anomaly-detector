@@ -140,6 +140,8 @@ class Configuration:
     # Aggregation
     AGGR_TIME_SPAN = 86400
     AGGR_MAX_ENTRIES = 315448
+    AGGR_VECTOR_LENGTH = 25
+    AGGR_WINDOW = 5
     AGGR_EPS = 0.5
     AGGR_MIN_SAMPLES = 5
 
