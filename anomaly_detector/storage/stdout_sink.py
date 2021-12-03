@@ -24,4 +24,9 @@ class StdoutSink(StorageSink):
                     logging.debug(e)
             logging.info("output logs {} in stdout.sink".format(len(entries)))
         else:
-            logging.error("To use stdout.sink you must set FACT_STORE_URL config")
+            for entry in entries:
+                try:
+                    if entry.get("anomaly") is 1:
+                        logging.info(entry['message'])
+                except Exception as e:
+                    logging.debug(e)

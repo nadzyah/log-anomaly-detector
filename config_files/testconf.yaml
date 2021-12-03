@@ -1,13 +1,14 @@
 MG_HOST: 172.17.18.83
 MG_PORT: 27017
-MG_INPUT_COL: web_logs
+MG_INPUT_COL: network_logs
 MG_INPUT_DB: fluentdb
-MG_TARGET_COL: web_anomaly
-MG_TARGET_DB: anomalydb
+MG_TARGET_COL: "" #network_anomaly
+MG_TARGET_DB: "" #anomalydb
 HOSTNAME_INDEX: hostname
 DATETIME_INDEX: timestamp
-TRAIN_TIME_SPAN: 2592000
+TRAIN_TIME_SPAN: 1728000
+TRAIN_MAX_ENTRIES: 10000
 MODEL_DIR: "./models/"
-LOGSOURCE_HOSTNAME: rh65.solidex.minsk.by
-STORAGE_DATASINK: mg
+LOGSOURCE_HOSTNAME: fortiauthenticator.solidex.minsk.by
+STORAGE_DATASINK: stdout
 STORAGE_DATASOURCE: mg

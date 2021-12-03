@@ -75,53 +75,53 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
         MongoDBStorage.__init__(self, config)
 
     def retrieve(self, storage_attribute: MGStorageAttribute):
-         """Retrieve data from MongoDB."""
+        """Retrieve data from MongoDB."""
 
-         mg_input_db = self.mg[self.config.MG_INPUT_DB]
-         now = datetime.datetime.now()
+        mg_input_db = self.mg[self.config.MG_INPUT_DB]
+        now = datetime.datetime.now()
 
-         mg_data = mg_input_db[self.config.MG_INPUT_COL]
+        mg_data = mg_input_db[self.config.MG_INPUT_COL]
 
-         if self.config.LOGSOURCE_HOSTNAME != 'localhost':
-             query = {
-                 self.config.DATETIME_INDEX:  {
-                     '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
-                     #'$gte': now - datetime.timedelta(days=30),
-                     '$lt': now
-                 },
-                 self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
-             }
-         else:
-             query = {
-                 self.config.DATETIME_INDEX:  {
-                     '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
-                     #'$gte': now - datetime.timedelta(days=30),
-                     '$lt': now
-                 }
-             }
+        if self.config.LOGSOURCE_HOSTNAME != 'localhost':
+            query = {
+                self.config.DATETIME_INDEX:  {
+                    '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                    #'$gte': now - datetime.timedelta(days=30),
+                    '$lt': now
+                },
+                self.config.HOSTNAME_INDEX: self.config.LOGSOURCE_HOSTNAME
+            }
+        else:
+            query = {
+                self.config.DATETIME_INDEX:  {
+                    '$gte': now - datetime.timedelta(seconds=storage_attribute.time_range),
+                    #'$gte': now - datetime.timedelta(days=30),
+                    '$lt': now
+                }
+            }
 
-         mg_data = mg_data.find(query).sort(self.config.DATETIME_INDEX, -1).limit(storage_attribute.number_of_entries)
-         _LOGGER.info(
+        mg_data = mg_data.find(query).sort(self.config.DATETIME_INDEX, -1).limit(storage_attribute.number_of_entries)
+        _LOGGER.info(
             "Reading %d log entries in last %d seconds from %s",
-             mg_data.count(True),
-             storage_attribute.time_range,
-             self.MG_URI,
-         )
+            mg_data.count(True),
+            storage_attribute.time_range,
+            self.MG_URI,
+        )
 
-         self.mg.close()
+        self.mg.close()
 
-         if not mg_data.count():   # if it equials 0:
-             return pandas.Dataframe(), mg_data
+        if not mg_data.count():   # if it equials 0:
+            return pandas.DataFrame(), mg_data
 
-         mg_data = dumps(mg_data, sort_keys=False)
+        mg_data = dumps(mg_data, sort_keys=False)
 
-         mg_data_normalized = pandas.DataFrame(pandas.json_normalize(json.loads(mg_data)))
-         _LOGGER.info("%d logs loaded in from last %d seconds", len(mg_data_normalized),
-                      storage_attribute.time_range)
+        mg_data_normalized = pandas.DataFrame(pandas.json_normalize(json.loads(mg_data)))
+        _LOGGER.info("%d logs loaded in from last %d seconds", len(mg_data_normalized),
+                     storage_attribute.time_range)
 
-         self._preprocess(mg_data_normalized)
+        self._preprocess(mg_data_normalized)
 
-         return mg_data_normalized, json.loads(mg_data)
+        return mg_data_normalized, json.loads(mg_data)
 
 
 class MongoDBDataSink(StorageSink, DataCleaner, MongoDBStorage):
