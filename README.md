@@ -14,11 +14,15 @@ Changes from the original project:
 ---
 
 **Table of Contents:**
+
 - [Installation](#installation)
   * [Step 1. Install the package](#step-1-install-the-package)
   * [Step 2. Create a configuration file in yaml syntax](#step-2-create-a-configuration-file-in-yaml-syntax)
-  * [Step 3. Run it as a daemon](#step-3-run-it-as-a-daemon)
+  * [Step 3. Configure log aggregation](#step-3-configure-log-aggregation)
+  * [Step 4. Run it as a daemon](#step-4-run-it-as-a-daemon)
 - [How it works](#how-it-works)
+  * [Log anomaly detector](#log-anomaly-detector)
+  * [Anomaly log aggregator](#anomaly-log-aggregator)
 - [Troubleshooting](#troubleshooting)
   * [Failed to start after reboot](#failed-to-start-after-reboot)
 
