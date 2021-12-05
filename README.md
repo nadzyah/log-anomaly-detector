@@ -150,7 +150,7 @@ You can modify this file, keeping its stricture.
 
 ## Step 3. Configure log aggregation
 
-We also provide a script to aggregate anomaly logs. To configure it open `/opt/anomaly_detector/aggregator.yaml` file. See the example below:
+We also provide a script to aggregate anomaly logs. Check it [here](http://172.17.17.198:3000/nhryshalevich/log-aggregator) To configure it open `/opt/anomaly_detector/aggregator.yaml` file. See the example below:
 
 ```yaml
 DATETIME_INDEX: timestamp
@@ -221,7 +221,7 @@ For example, in the config file all the anomaly logs from `web_anomaly` collecti
 
 The aggregation script is run every day at 3:00 p.m. You can change the time in the `/etc/crontab` file.
 
-If you want to aggregate logs right now, execute the next command: `sudo python3 /opt/anomaly_detector/aggregator.py`
+If you want to aggregate logs right now, execute the next command: `log-aggregator run --config-yaml /opt/anomaly_detector/aggregator.yaml`
 
 ## Step 4. Run it as a daemon
 Enable and start the service.
