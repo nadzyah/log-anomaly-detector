@@ -6,6 +6,8 @@ sudo apt-get install -y python3-pip
 
 echo "Installing the LAD package"
 sudo pip3 install git+http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector.git
+echo "Installing the Log Aggregator package"
+sudo pip3 install git+http://git.solidex.minsk.by:3000/nhryshalevich/log-aggregator.git
 
 echo "Creating lad user"
 #adduser --disabled-password --gecos "" lad
@@ -40,10 +42,9 @@ wget "http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/ma
 echo "Schedule cron to restart anomaly_detector service every midnight"
 echo "0  0  * * * root  service anomaly_detector restart" >> /etc/crontab
 
-echo "Adding aggregation script"
-wget "http://git:3000/nhryshalevich/log-anomaly-detector/raw/master/aggregation/aggregator.py" -O /opt/anomaly_detector/aggregator.py
-wget "http://git:3000/nhryshalevich/log-anomaly-detector/raw/master/aggregation/aggregator.yaml" -O /opt/anomaly_detector/aggregator.yaml
-chown lad:lad /opt/anomaly_detector/aggragator.*
+echo "Adding aggregation condfig"
+wget "http://git:3000/nhryshalevich/log-aggregator/raw/master/configs/aggregator.yaml" -O /opt/anomaly_detector/aggregator.yaml
+chown lad:lad /opt/anomaly_detector/aggragator.yaml
 echo "Schedule cron to run aggregation script every day at 3:00 p.m."
-echo "0  15 * * * lad   /usr/bin/python3 /opt/anomaly_detector/aggregator.py" >> /etc/crontab
+echo "0  15 * * * lad   log-aggregator run --config-yaml /opt/anomaly_detector/aggregator.yaml" >> /etc/crontab
 
