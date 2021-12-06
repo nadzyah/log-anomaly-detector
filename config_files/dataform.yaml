@@ -5,6 +5,7 @@ MG_PORT: 27017
 MG_USER: dbadmin
 MG_PASSWORD: password123
 MG_CA_CERT: "/home/nadzya/Apps/log-anomaly-detector/config_files/LAD_CA.crt"
+MG_VERIFY_CERT: true
 MG_INPUT_COL: web_logs
 MG_INPUT_DB: fluentdb
 MG_TARGET_COL: web_anomaly

@@ -63,23 +63,19 @@ Since it supports MongoDB and single-host running, there're some additional vari
   </tr>
   <tr>
      <td>MG_USER</td>
-     <td>MongoDB username</td>
+     <td>MongoDB username (optional)</td>
   </tr>
   <tr>
      <td>MG_PASSWORD</td>
-     <td>MongoDB password</td>
+     <td>MongoDB password (optional)</td>
   </tr>
   <tr>
-     <td>MG_USE_SSL</td>
-     <td>Boolean variable that defines if SSL should be used for connection</td>
-  </tr>
-  <tr>
-     <td>MG_CERT_DIR</td>
-     <td>Server certificate location</td>
+     <td>MG_CA_CERT</td>
+     <td>CA certificate location for TLS encryption (optional)</td>
   </tr>
   <tr>
      <td>MG_VERIFY_CERT</td>
-     <td>Boolean variable that defines if server's certificate should be verified</td>
+     <td>Boolean variable that defines if server's certificate should be verified (optional)</td>
   </tr>
   <tr>
      <td>MG_INPUT_DB</td>
