@@ -4,6 +4,8 @@ MG_INPUT_COL: web_logs
 MG_INPUT_DB: fluentdb
 MG_TARGET_COL: web_anomaly
 MG_TARGET_DB: anomalydb
+MG_USER: dbadmin
+MG_PASSWORD: password123
 HOSTNAME_INDEX: hostname
 DATETIME_INDEX: timestamp
 TRAIN_TIME_SPAN: 2592000
