@@ -204,11 +204,11 @@ You must be already familiar with some of the options. See the description to th
   </tr>
   <tr>
     <td>AGGR_EPS</td>
-    <td>The same as "eps" parameter in DBSCAN algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+    <td>The same as "eps" parameter in DBSCAN algorithm. **MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING**</td>
   </tr>
   <tr>
     <td>AGGR_MIN_SAMPLES</td>
-    <td>The same as "min_samples" parameter in DBSCAN algorithm. MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</td>
+    <td>The same as "min_samples" parameter in DBSCAN algorithm. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   <tr>
     <td>AGGR_VECTOR_LENGTH</td>
