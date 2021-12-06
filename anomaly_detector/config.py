@@ -124,8 +124,8 @@ class Configuration:
 
     # MongoDB config
     MG_USE_SSL = False
-    MG_CERT_DIR = ""
-    MG_VERIFY_CERTS = False
+    MG_CA_CERT = ""
+    MG_VERIFY_CERT = False
     MG_HOST = 'localhost'
     MG_PORT = 27017
     MG_USER = ""

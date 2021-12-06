@@ -41,21 +41,20 @@ class MongoDBStorage:
         self._connect()
 
     def _connect(self):
-        if len(self.config.MG_CERT_DIR) and os.path.isdir(self.config.MG_CERT_DIR):
+        if len(self.config.MG_CA_CERT) and os.path.isfile(self.config.MG_CA_CERT):
             _LOGGER.warning(
-                "Using cert and key in %s for connection to %s (verify_certs=%s)."
+                "Connection to MongoDB at %s with SSL/TLS using CA certificate in %s (verify=%s)."
                 % (
-                    self.config.MG_CERT_DIR,
-                    self.MG_URI,
-                    self.config.MG_VERIFY_CERTS,
+                    self.config.MG_HOST,
+                    self.config.MG_CA_CERT,
+                    self.config.MG_VERIFY_CERT
                 )
             )
             self.mg = MongoClient(
                 self.MG_URI,
-                ssl=True,
-                ssl_certfile=MG_CERT_DIR,
-                ssl_cert_reqs=ssl.CERT_REQUIRED,
-                ssl_ca_certs=self.config.MG_CACERT_DIR,
+                tls=True,
+                tlsCAFile=self.config.MG_CA_CERT,
+                tlsAllowInvalidCertificates=self.config.MG_VERIFY_CERT
             )
         else:
             _LOGGER.warning("Conecting to MongoDB without SSL/TLS encryption.")
