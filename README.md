@@ -34,12 +34,16 @@ This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 
 
 ## Step 1. Install the package
 
-Copy the `install.sh` script and run it as sudo:
+Clone the repo and run `install.sh` script as sudo:
+
 ```bash
-$ wget http://git.solidex.minsk.by:3000/nhryshalevich/log-anomaly-detector/raw/master/install.sh
-$ chmod +x install.sh
-$ sudo ./install.sh
+$ cd ~/
+$ git clone <repo url>
+$ chmod +x ./log-anomaly-detector/install.sh
+$ sudo ./log-anomaly-detector/install.sh
 ```
+
+Then you can delete the repo: `rm -rf ~/log-anomaly-detector`
 
 ## Step 2. Create a configuration file in yaml syntax
 The config variables are defined here: [https://log-anomaly-detector.readthedocs.io/en/latest/configinfo.html](https://log-anomaly-detector.readthedocs.io/en/latest/configinfo.html)
