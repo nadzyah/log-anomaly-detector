@@ -28,9 +28,8 @@ class DataCleaner:
     @classmethod
     def _clean_message(cls, line):
         """Remove all none alphabetical characters from message strings."""
-        return "".join(
-            re.findall("[a-zA-Z]+", line)
-        )  # Leaving only a-z in there as numbers add to anomalousness quite a bit
+        words = list(re.findall("[a-zA-Z]+", line))
+        return words
 
     @classmethod
     def _preprocess(cls, data):

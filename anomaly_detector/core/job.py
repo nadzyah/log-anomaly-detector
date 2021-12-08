@@ -45,7 +45,9 @@ class SomTrainJob(AbstractCommand):
         if not raw_data:
             raise EmptyDataSetException("no new logs found.")
         # After first time training we will only update w2v model not recreate it everytime.
-        dist = self.model_adapter.train(node_map=self.node_map, data=dataframe, recreate_model=self.recreate_model)
+        dist = self.model_adapter.train(node_map=self.node_map,
+                                        data=dataframe,
+                                        recreate_model=self.recreate_model)
         self.recreate_model = False
         return 0, dist
 
@@ -80,6 +82,7 @@ class SomInferenceJob(AbstractCommand):
             if data is None:
                 time.sleep(5)
                 continue
+
             logging.info("%d logs loaded from the last %d seconds", len(data),
                          self.model_adapter.storage_adapter.INFER_TIME_SPAN)
             results = self.model_adapter.predict(data, json_logs, threshold)

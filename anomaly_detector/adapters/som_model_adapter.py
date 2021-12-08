@@ -115,7 +115,8 @@ class SomModelAdapter(BaseModelAdapter):
             if dist[i] > threshold:
                 if false_positives is not None:
                     if s["message"] in feedback_strategy.uniq_items:
-                        # logging.info("False positive was found (score: %f): %s" % (dist[i], s["message"]))
+                        logging.info("False positive was found (score: %f): %s" % (dist[i],
+                                                                                   s["message"]))
                         FALSE_POSITIVE_COUNT.labels(id=s["predict_id"]).inc()
                         continue
                 hist_count += 1
@@ -128,6 +129,7 @@ class SomModelAdapter(BaseModelAdapter):
             ANOMALY_COUNT.labels(anomaly_status=s["anomaly"]).inc()
             ANOMALY_HIST.observe(hist_count)
             f.append(s)
+        print("ANOMALY PERCENTAGE:", 100*hist_count/len(data))
         return f
 
     @latency_logger(name="SomModelAdapter")
@@ -146,7 +148,7 @@ class SomModelAdapter(BaseModelAdapter):
         meta_data = self.model.get_metadata()
         stdd = meta_data[1]
         mean = meta_data[0]
-        threshold = self.storage_adapter.INFER_ANOMALY_THRESHOLD * stdd + mean
+        threshold = (self.storage_adapter.INFER_ANOMALY_THRESHOLD * stdd + mean)*0.97
         THRESHOLD.set(threshold)
         logging.info("threshold for anomaly is of %f" % threshold)
         logging.info("Models loaded, running %d infer loops" % self.storage_adapter.INFER_LOOPS)

@@ -1,4 +1,9 @@
-STORAGE_DATASOURCE: mg
+#STORAGE_DATASOURCE: mg
+
+STORAGE_DATASOURCE: local
+#LS_INPUT_PATH: "./validation_data/kvm1.lab.solidex.by.json"
+LS_INPUT_PATH: "./validation_data/solidex.by.json"
+
 STORAGE_DATASINK: stdout
 MG_HOST: 172.17.18.83
 MG_PORT: 27017
@@ -6,12 +11,18 @@ MG_USER: dbadmin
 MG_PASSWORD: password123
 MG_CA_CERT: "/home/nadzya/Apps/log-anomaly-detector/config_files/LAD_CA.crt"
 MG_VERIFY_CERT: true
-MG_INPUT_COL: web_logs
 MG_INPUT_DB: fluentdb
-MG_TARGET_COL: web_anomaly
+MG_INPUT_COL: web_logs
 MG_TARGET_DB: anomalydb
-HOSTNAME_INDEX: hostname
+MG_TARGET_COL: web_anomaly
 DATETIME_INDEX: timestamp
+HOSTNAME_INDEX: hostname
+
 TRAIN_TIME_SPAN: 2592000
+#TRAIN_MAX_ENTRIES: 10000
+#INFER_MAX_ENTRIES: 10000
+INFER_LOOPS: 1
+#INFER_ANOMALY_THRESHOLD: 3
+
 MODEL_DIR: "./models/"
-LOGSOURCE_HOSTNAME: data.solidex.by
+LOGSOURCE_HOSTNAME: 195-137-160-145.hoster.by

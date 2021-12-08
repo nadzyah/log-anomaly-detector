@@ -84,7 +84,6 @@ class SOMModel(BaseModel):
                 dist = np.linalg.norm(self.model[x][y] - log)
                 if dist < dist_smallest:
                     dist_smallest = dist
-
         return dist_smallest
 
     # TODO: make method private

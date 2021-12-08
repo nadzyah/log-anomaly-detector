@@ -95,7 +95,8 @@ class DetectorPipelineCatalog(object):
         """Perform Training and inference of SOMPY Model."""
         pipeline = DetectorPipeline()
         model_adapter = cls.create_sompy_modeladapter(config, feedback_strategy)
-        pipeline.add_steps(SomTrainJob(node_map=config.SOMPY_NODE_MAP, model_adapter=model_adapter))
+        pipeline.add_steps(SomTrainJob(node_map=config.SOMPY_NODE_MAP,
+                                       model_adapter=model_adapter))
         pipeline.add_steps(SomInferenceJob(model_adapter=model_adapter))
         return pipeline
 

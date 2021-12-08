@@ -24,6 +24,7 @@ class SomStorageAdapter(BaseStorageAdapter):
             logging.info("There are no logs in last %s seconds", timespan)
             return None, None
         else:
+            data = list(data.message)
             return data, raw
 
     @latency_logger(name="SomStorageAdapter")
