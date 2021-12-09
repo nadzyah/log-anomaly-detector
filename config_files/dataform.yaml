@@ -1,10 +1,10 @@
-#STORAGE_DATASOURCE: mg
+STORAGE_DATASOURCE: mg
 
-STORAGE_DATASOURCE: local
+#STORAGE_DATASOURCE: local
 #LS_INPUT_PATH: "./validation_data/kvm1.lab.solidex.by.json"
-LS_INPUT_PATH: "./validation_data/solidex.by.json"
+#LS_INPUT_PATH: "./validation_data/solidex.by.json"
 
-STORAGE_DATASINK: stdout
+STORAGE_DATASINK: mg
 MG_HOST: 172.17.18.83
 MG_PORT: 27017
 MG_USER: dbadmin
@@ -18,7 +18,7 @@ MG_TARGET_COL: web_anomaly
 DATETIME_INDEX: timestamp
 HOSTNAME_INDEX: hostname
 
-TRAIN_TIME_SPAN: 2592000
+TRAIN_TIME_SPAN: 86400
 #TRAIN_MAX_ENTRIES: 10000
 #INFER_MAX_ENTRIES: 10000
 INFER_LOOPS: 1

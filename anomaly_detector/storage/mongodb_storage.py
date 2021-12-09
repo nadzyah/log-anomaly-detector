@@ -13,7 +13,6 @@ from anomaly_detector.storage.storage_attribute import MGStorageAttribute
 from anomaly_detector.storage.storage_source import StorageSource
 from anomaly_detector.storage.storage_sink import StorageSink
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -73,6 +72,7 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
         self.config = config
         MongoDBStorage.__init__(self, config)
 
+
     def retrieve(self, storage_attribute: MGStorageAttribute):
         """Retrieve data from MongoDB."""
 
@@ -117,7 +117,6 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
         mg_data_normalized = pandas.DataFrame(pandas.json_normalize(json.loads(mg_data)))
         _LOGGER.info("%d logs loaded in from last %d seconds", len(mg_data_normalized),
                      storage_attribute.time_range)
-
         self._preprocess(mg_data_normalized)
 
         return mg_data_normalized, json.loads(mg_data)
@@ -147,9 +146,9 @@ class MongoDBDataSink(StorageSink, DataCleaner, MongoDBStorage):
                 del x['inference_batch_id']
                 del x['elast_alert']
                 if isinstance(x[self.config.DATETIME_INDEX], dict):
-                    x[self.config.DATETIME_INDEX] = datetime.datetime.fromtimestamp(x[self.config.DATETIME_INDEX]["$date"] / 1e3)
+                    x[self.config.DATETIME_INDEX] = (datetime.datetime.fromtimestamp(x[self.config.DATETIME_INDEX]["$date"] / 1e3)
+                                                     - datetime.timedelta(hours=3))
                 normalized_data.append(x)
-
         if normalized_data:
             _LOGGER.info("Inderting data to MongoDB.")
             mg_target_col.insert_many(normalized_data)
