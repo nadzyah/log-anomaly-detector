@@ -245,9 +245,9 @@ Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/lat
 
 ### Word2Vec
 
-Here we improved Word2Vec. In original approach each log message was considered as a word, but since w2v uses context to vectorize words, this approach gives us very strict similarities between logs, which are initialized with random numbers.
+Here we improved Word2Vec. In the original approach, each log message was considered as a word, but since w2v uses context to vectorize words, this approach gives us very strict similarities between logs, which are initialized with random numbers.
 
-In our approach we vectorize each word in each log message. The vector of a log message in the mean vector of all the vectors that represent the log message (the mean for each cordinate is calculated separately).
+In our approach, we vectorize each word in each log message. The vector of a log message is the mean vector of all the vectors that represent the log message (the mean for each coordinate is calculated separately).
 
 ### The daemon
 
