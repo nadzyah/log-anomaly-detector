@@ -10,6 +10,7 @@ Changes from the original project:
 - MongoDB as a data source and  data sink support
 - Run analysis for a specific host
 - UI and Prometheus support was removed
+- The usage Word2Vec algorithm was improved
 
 ---
 
@@ -22,10 +23,11 @@ Changes from the original project:
   * [Step 4. Run it as a daemon](#step-4-run-it-as-a-daemon)
 - [How it works](#how-it-works)
   * [Log anomaly detector](#log-anomaly-detector)
+    + [Word2Vec](#word2vec)
+    + [The daemon](#the-daemon)
   * [Anomaly log aggregator](#anomaly-log-aggregator)
 - [Troubleshooting](#troubleshooting)
   * [Failed to start after reboot](#failed-to-start-after-reboot)
-
 
 # Installation
 This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 and MongoDB v5.0.3.
@@ -240,6 +242,14 @@ $ sudo systemctl status anomaly_detector
 ## Log anomaly detector
 
 Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/latest/model.html](https://log-anomaly-detector.readthedocs.io/en/latest/model.html)
+
+### Word2Vec
+
+Here we improved Word2Vec. In original approach each log message was considered as a word, but since w2v uses context to vectorize words, this approach gives us very strict similarities between logs, which are initialized with random numbers.
+
+In our approach we vectorize each word in each log message. The vector of a log message in the mean vector of all the vectors that represent the log message (the mean for each cordinate is calculated separately).
+
+### The daemon
 
 The daemon itself creates *n* parallel processes, where *n* is the number of hosts. Each process retrieves logs in the last 30 days for a specified host from the collection and trains the model. Then it periodically checks the DB for new log entries. If the new entry appears, the process checks if it's an anomaly. If the log message is an anomaly, it is pushed to the collection in the target database.
 
