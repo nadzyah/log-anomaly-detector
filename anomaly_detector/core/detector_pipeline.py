@@ -1,8 +1,9 @@
 """DetectorPipeline class for processing a workflow of tasks to train an ML model."""
 from anomaly_detector.core import AbstractCommand
-from anomaly_detector.adapters import FeedbackStrategy, SomStorageAdapter, SomModelAdapter
-from anomaly_detector.core import SomTrainJob, SomInferenceJob
+from anomaly_detector.adapters import FeedbackStrategy, SomStorageAdapter, SomModelAdapter, LOFStorageAdapter, LOFModelAdapter
+from anomaly_detector.core import SomTrainJob, SomInferenceJob, LOFTrainJob, LOFInferenceJob
 from prometheus_client import Counter
+
 
 DETECTOR_PIPELINE_COUNTER = Counter("aiops_lad_pipeline_run_count",
                                     "Count of how many times data pipeline gets executed")
@@ -109,10 +110,51 @@ class DetectorPipelineCatalog(object):
         pipeline.add_steps(train)
         return pipeline
 
+
+    @classmethod
+    def create_lof_modeladapter(cls, config):
+        """Setup lof model which provides functionality required to train LOF Model with W2V encoding."""
+        storage_adapter = LOFStorageAdapter(config)
+        model_adapter = LOFModelAdapter(storage_adapter)
+        return model_adapter
+
+    @classmethod
+    def _lof_train_job(cls, config):
+        """Perform training of LOF model."""
+        pipeline = DetectorPipeline()
+        model_adapter = cls.create_lof_modeladapter(config)
+        train = LOFTrainJob(model_adapter=model_adapter)
+        pipeline.add_steps(train)
+        return pipeline
+
+    @classmethod
+    def _lof_train_infer_job(cls, config):
+        """Perform training and inference of LOF model."""
+        pipeline = DetectorPipeline()
+        model_adapter = cls.create_lof_modeladapter(config)
+        pipeline.add_steps(LOFTrainJob(model_adapter))
+        pipeline.add_steps(LOFInferenceJob(model_adapter))
+        return pipeline
+
+    @classmethod
+    def _lof_infer_job(cls, config):
+        """Perform inference of LOF Model."""
+        pipeline = DetectorPipeline()
+        model_adapter = cls.create_lof_modeladapter(config)
+        pipeline.add_steps(LOFInferenceJob(model_adapter))
+        return pipeline
+
+
     _class_method_choices = {'sompy.train': _sompy_train_job,
                              'sompy.inference': _sompy_infer_job,
-                             'sompy.train.inference': _sompy_train_infer_job}
+                             'sompy.train.inference': _sompy_train_infer_job,
+                             'lof.train': _lof_train_job,
+                             'lof.inference': _lof_infer_job,
+                             'lof.train.inference': _lof_train_infer_job
+                             }
 
     def get_pipeline(self):
         """Provide a pipeline to allow client to select which algorithm to use."""
-        return self._class_method_choices[self.job].__get__(None, self.__class__)(self.config, self.feedback_strategy)
+        if self.job.startswith("sompy"):
+            return self._class_method_choices[self.job].__get__(None, self.__class__)(self.config, self.feedback_strategy)
+        return self._class_method_choices[self.job].__get__(None, self.__class__)(self.config)

@@ -4,6 +4,7 @@ import pandas
 from pymongo import MongoClient
 import ssl
 import os
+from dateutil.parser import parse
 import logging
 from bson.json_util import dumps
 from pandas.io.json import json_normalize
@@ -139,15 +140,24 @@ class MongoDBDataSink(StorageSink, DataCleaner, MongoDBStorage):
         normalized_data = []
         for x in data:
             if x['anomaly']:
-                del x['_id']
-                del x['e_message']
-                del x['predict_id']
-                del x['predictor_namespace']
-                del x['inference_batch_id']
-                del x['elast_alert']
+                if '_id' in x.keys():
+                    del x['_id']
+                if 'e_message' in x.keys():
+                    del x['e_message']
+                if 'predict_id' in x.keys():
+                    del x['predict_id']
+                if 'predictor_namespace' in x.keys():
+                    del x['predictor_namespace']
+                if 'inference_batch_id' in x.keys():
+                    del x['inference_batch_id']
+                if 'elast_alert' in x.keys():
+                    del x['elast_alert']
                 if isinstance(x[self.config.DATETIME_INDEX], dict):
-                    x[self.config.DATETIME_INDEX] = (datetime.datetime.fromtimestamp(x[self.config.DATETIME_INDEX]["$date"] / 1e3)
-                                                     - datetime.timedelta(hours=3))
+                    date = x[self.config.DATETIME_INDEX]["$date"]
+                    if isinstance(date, int):
+                        x[self.config.DATETIME_INDEX] = (datetime.datetime.fromtimestamp(date / 1e3) - datetime.timedelta(hours=3))
+                    else:
+                        x[self.config.DATETIME_INDEX] = parse(date)
                 normalized_data.append(x)
         if normalized_data:
             _LOGGER.info("Inderting data to MongoDB.")

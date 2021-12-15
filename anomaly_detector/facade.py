@@ -58,7 +58,7 @@ class Facade:
             try:
                 jobs = DetectorPipelineCatalog(config=self.config,
                                                feedback_strategy=self.feedback_strategy,
-                                               job="sompy.train.inference")
+                                               job="lof.train.inference")
                 self.pipeline = jobs.get_pipeline()
                 self.start_job()
                 logging.info("Job ran succesfully")
@@ -89,7 +89,7 @@ class Facade:
         """
         jobs = DetectorPipelineCatalog(config=self.config,
                                        feedback_strategy=self.feedback_strategy,
-                                       job="sompy.train")
+                                       job="lof.train")
 
         self.pipeline = jobs.get_pipeline()
         self.start_job()
@@ -101,6 +101,6 @@ class Facade:
         """
         jobs = DetectorPipelineCatalog(config=self.config,
                                        feedback_strategy=self.feedback_strategy,
-                                       job="sompy.inference")
+                                       job="lof.inference")
         self.pipeline = jobs.get_pipeline()
         self.start_job()

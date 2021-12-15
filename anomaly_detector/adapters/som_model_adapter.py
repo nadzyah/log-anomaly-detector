@@ -129,7 +129,7 @@ class SomModelAdapter(BaseModelAdapter):
             ANOMALY_COUNT.labels(anomaly_status=s["anomaly"]).inc()
             ANOMALY_HIST.observe(hist_count)
             f.append(s)
-        print("ANOMALY PERCENTAGE:", 100*hist_count/len(data))
+        print("ANOMALY PERCENTAGE:", 100*hist_count/len(data), "%")
         return f
 
     @latency_logger(name="SomModelAdapter")

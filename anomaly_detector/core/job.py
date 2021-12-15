@@ -99,3 +99,61 @@ class SomInferenceJob(AbstractCommand):
                     time.sleep(sleep_time)
 
         return 0
+
+
+class LOFTrainJob(AbstractCommand):
+    """LOF Training logic custom for each model. For this model we need to setup some configs."""
+
+    recreate_models = False
+
+    def __init__(self, model_adapter=None, recreate_model=True):
+        self.model_adapter = model_adapter
+        self.recreate_model = recreate_model
+
+    def execute(self):
+        """Execute training logic for anomaly detection for LOF with W2V encoding."""
+        TRAINING_COUNT.inc()
+        dataframe, raw_data = self.model_adapter.preprocess(config_type="train",
+                                                            recreate_model=self.recreate_model)
+        if not raw_data:
+            raise EmptyDataSetException("no new logs found.")
+
+        scores = self.model_adapter.train(data=dataframe, json_logs=raw_data)
+        self.recreate_model = False
+        return 0, scores
+
+
+class LOFInferenceJob(AbstractCommand):
+    """LOF Inference implementation."""
+
+    def __init__(self, model_adapter=None, sleep=True, recreate_model=False):
+        """Initialize inference job with fields to perform model inference."""
+        self.model_adapter = model_adapter
+        self.sleep = sleep
+        self.recreate_model = recreate_model
+
+    def execute(self):
+        """Execute inference login for LOF with W2V encoding."""
+        self.model_adapter.load_w2v_model()
+        self.model_adapter.load_lof_model()
+        then = time.time()
+        data, json_logs = self.model_adapter.preprocess(config_type="infer",
+                                                        recreate_model=self.recreate_model)
+        #if not data: # If it's None
+        #    # Sleep 15 seconds if there's no new data
+        #    time.sleep(15)
+
+        logging.info("%d logs loaded from the last %d seconds", len(data),
+                     self.model_adapter.storage_adapter.INFER_TIME_SPAN)
+        results = self.model_adapter.predict(data, json_logs)
+        self.model_adapter.storage_adapter.persist_data(results)
+        now = time.time()
+
+        if self.sleep:
+            logging.info("waiting for next minute to start...")
+            logging.info("press ctrl+c to stop process")
+            sleep_time = self.model_adapter.storage_adapter.INFER_TIME_SPAN - (now-then)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        return 0

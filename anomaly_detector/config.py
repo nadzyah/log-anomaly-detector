@@ -18,6 +18,11 @@ def join_w2v_model_path(config):
     config.W2V_MODEL_PATH = os.path.join(config.MODEL_DIR, config.W2V_MODEL_FILE)
 
 
+def join_lof_model_path(config):
+    """Construct LOF model path"""
+    config.LOF_MODEL_PATH = os.path.join(config.MODEL_DIR, config.LOF_MODEL_FILE)
+
+
 def check_or_create_model_dir(config):
     """Check if model dir exists and create if not."""
     if not os.path.exists(config.MODEL_DIR):
@@ -42,6 +47,9 @@ class Configuration:
     MODE_DIR_CALLABLE = check_or_create_model_dir
     # Name of the file where SOM model will be stored
     MODEL_FILE = "SOM.model"
+    # LOF model
+    LOF_MODEL_FILE = "LOF.model"
+    LOF_MODEL_PATH_CALLABLE = join_lof_model_path
     # Name of the file where W2V model will be stored
     W2V_MODEL_FILE = "W2V.model"
     MODEL_PATH_CALLABLE = join_model_path
@@ -76,6 +84,13 @@ class Configuration:
     TRAIN_VECTOR_LENGTH = 25
     # number of jobs to use to parallelize the training, should match cpu resource limit
     PARALLELISM = 1
+
+    # LOF
+    LOF_MODEL_STORE = ""
+    LOF_MODEL_STORE_PATH = "anomaly-detection/models"
+
+    LOF_NEIGHBORS = 20
+    LOF_METRIC = "euclidean"
 
     # Threshold used to decide whether an entry is an anomaly
     INFER_ANOMALY_THRESHOLD = 3.1
@@ -136,6 +151,7 @@ class Configuration:
     MG_TARGET_COL = ""
     HOSTNAME_INDEX = ""
     DATETIME_INDEX = ""
+    MESSAGE_INDEX = ""
 
     # Aggregation
     AGGR_TIME_SPAN = 86400
