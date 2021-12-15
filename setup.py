@@ -37,7 +37,7 @@ REQUIRED_PKG = [
 
 setup(
     name="log-anomaly-detector",
-    version="0.3.0",
+    version="0.4.0",
     py_modules=['app'],
     packages=find_packages(),
     setup_requires=["pytest-runner"],
