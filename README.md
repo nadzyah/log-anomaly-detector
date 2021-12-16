@@ -125,7 +125,7 @@ Since it supports MongoDB and single-host running, there're some additional vari
   </tr>
   <tr>
      <td>LOF_METRIC</td>
-     <td>LOF n_neighbors (or k_neighbors) hyperparameter. Is euclidean by default <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+     <td>LOF metric hyperparameter. Is euclidean by default <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   </tbody>
 </table>
