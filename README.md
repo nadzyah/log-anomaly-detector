@@ -108,12 +108,24 @@ Since it supports MongoDB and single-host running, there're some additional vari
      <td>multiple MG_INPUT_COL +  multiple HOSTNAMES + multiple MG_TARGET_COL</td>
   </tr>
   <tr>
+     <td>MESSAGE_INDEX</td>
+     <td>The name of the index where the raw event (or log message) is specified</td>
+  </tr>
+  <tr>
      <td>HOSTNAME_INDEX</td>
      <td>The name of the index where hostname is specified</td>
   </tr>
   <tr>
      <td>DATETIME_INDEX</td>
      <td>The name of the index where event time is specified</td>
+  </tr>
+  <tr>
+     <td>LOF_NEIGHBORS</td>
+     <td>LOF n_neighbors (or k_neighbors) hyperparameter. Is 100 by default <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+  </tr>
+  <tr>
+     <td>LOF_METRIC</td>
+     <td>LOF n_neighbors (or k_neighbors) hyperparameter. Is euclidean by default <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   </tbody>
 </table>
@@ -202,23 +214,23 @@ You must be already familiar with some of the options. See the description to th
   </tr>
   <tr>
     <td>AGGR_TIME_SPAN</td>
-    <td>Number of seconds specifying how far to the past to go to load log entries for aggregation</td>
+    <td>Number of seconds specifying how far to the past to go to load log entries for aggregation. Is 86400 (24 hours) by default</td>
   </tr>
   <tr>
     <td>AGGR_EPS</td>
-    <td>The same as "eps" parameter in DBSCAN algorithm. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+    <td>The same as "eps" parameter in DBSCAN algorithm. Is 0.5 by default. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   <tr>
     <td>AGGR_MIN_SAMPLES</td>
-    <td>The same as "min_samples" parameter in DBSCAN algorithm. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+    <td>The same as "min_samples" parameter in DBSCAN algorithm. Is 5 by default. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   <tr>
     <td>AGGR_VECTOR_LENGTH</td>
-    <td>The same as "size" parameter in Word2Vec algorithm. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+    <td>The same as "size" parameter in Word2Vec algorithm. Is 25 by default. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   <tr>
     <td>AGGR_WINDOW</td>
-    <td>The same as "window" parameter in Word2Vec algorithm. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
+    <td>The same as "window" parameter in Word2Vec algorithm. Is 5 by default. <b>MODIFY ONLY IF YOU KNOW WHAT YOU'RE DOING</b></td>
   </tr>
   </tbody>
 </table>
@@ -248,6 +260,10 @@ Read about the ML Core here: [https://log-anomaly-detector.readthedocs.io/en/lat
 Here we improved Word2Vec. In the original approach, each log message was considered as a word, but since w2v uses context to vectorize words, this approach gives us very strict similarities between logs, which are initialized with random numbers.
 
 In our approach, we vectorize each word in each log message. The vector of a log message is the mean vector of all the vectors that represent the log message (the mean for each coordinate is calculated separately).
+
+### Anomaly detection
+
+By default the LAD developers use SOM algorithm for this task. Here we've switched to [Local Outlier Factor](https://www.wikiwand.com/en/Local_outlier_factor) algorithm since we've found it to be more efficient.
 
 ### The daemon
 

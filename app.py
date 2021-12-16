@@ -4,9 +4,8 @@ from anomaly_detector.config import Configuration
 from anomaly_detector.facade import Facade
 import click
 import os
-
-from anomaly_detector.fact_store.app import create_app
-from anomaly_detector.fact_store.app.deploy_prod import GunicornFactstore
+import hashlib
+from getpass import getpass
 
 CONFIGURATION_PREFIX = "LAD"
 

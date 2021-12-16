@@ -89,7 +89,7 @@ class Configuration:
     LOF_MODEL_STORE = ""
     LOF_MODEL_STORE_PATH = "anomaly-detection/models"
 
-    LOF_NEIGHBORS = 20
+    LOF_NEIGHBORS = 100
     LOF_METRIC = "euclidean"
 
     # Threshold used to decide whether an entry is an anomaly
