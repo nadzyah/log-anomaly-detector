@@ -38,7 +38,7 @@ REQUIRED_PKG = [
 setup(
     name="log-anomaly-detector",
     version="0.4.0",
-    py_modules=['app'],
+    py_modules=['lad'],
     packages=find_packages(),
     setup_requires=["pytest-runner"],
     tests_require=[
@@ -64,6 +64,6 @@ setup(
     install_requires=REQUIRED_PKG,
     entry_points="""
         [console_scripts]
-        log-anomaly-detector=app:cli
+        log-anomaly-detector=lad:cli
     """,
 )

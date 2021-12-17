@@ -4,11 +4,15 @@ from anomaly_detector.config import Configuration
 from anomaly_detector.facade import Facade
 import click
 import os
-import hashlib
-from getpass import getpass
 
 CONFIGURATION_PREFIX = "LAD"
 
+
+def hash_string(string):
+    """
+    Return a SHA-256 hash of the given string
+    """
+    return hashlib.sha256(string.encode('utf-8')).hexdigest()
 
 @click.group()
 @click.option("--metric-port", default=8080, help="sets up metrics to publish to custom port")
