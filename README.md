@@ -24,6 +24,7 @@ Changes from the original project:
 - [How it works](#how-it-works)
   * [Log anomaly detector](#log-anomaly-detector)
     + [Word2Vec](#word2vec)
+    + [Anomaly detection](#anomaly-detection)
     + [The daemon](#the-daemon)
   * [Anomaly log aggregator](#anomaly-log-aggregator)
 - [Troubleshooting](#troubleshooting)
@@ -263,7 +264,7 @@ In our approach, we vectorize each word in each log message. The vector of a log
 
 ### Anomaly detection
 
-By default the LAD developers use SOM algorithm for this task. Here we've switched to [Local Outlier Factor](https://www.wikiwand.com/en/Local_outlier_factor) algorithm since we've found it to be more efficient.
+By default the LAD developers use SOM algorithm for this task. Here we've switched to [Local Outlier Factor](https://www.wikiwand.com/en/Local_outlier_factor) algorithm since we've found it to be more efficient (see `Notebooks/experiment/LAD_Custom_Experiment.ipynb` file).
 
 ### The daemon
 
