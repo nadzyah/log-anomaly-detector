@@ -4,6 +4,8 @@ from anomaly_detector.config import Configuration
 from anomaly_detector.facade import Facade
 import click
 import os
+import hashlib
+from getpass import getpass
 
 CONFIGURATION_PREFIX = "LAD"
 
