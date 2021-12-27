@@ -6,6 +6,9 @@ import click
 import os
 import hashlib
 from getpass import getpass
+import yaml
+
+from multiprocessing import Pool, Process
 
 CONFIGURATION_PREFIX = "LAD"
 
@@ -15,6 +18,25 @@ def hash_string(string):
     Return a SHA-256 hash of the given string
     """
     return hashlib.sha256(string.encode('utf-8')).hexdigest()
+
+def one_to_many_configs(config_file):
+    result = []
+    with open(config_file, 'r') as f:
+        yaml_data = yaml.safe_load(f)
+        config_data = yaml_data.copy()
+        del config_data['LOG_SOURCES']
+        if 'LOG_SOURCES' in yaml_data.keys():
+            for input_col_name, input_info in yaml_data['LOG_SOURCES'].items():
+                for host in input_info['HOSTNAMES']:
+                    config_data = config_data.copy()
+                    config_data['MG_INPUT_COL'] = input_col_name
+                    config_data['LOGSOURCE_HOSTNAME'] = host
+                    config_data['MG_TARGET_COL'] = input_info['MG_TARGET_COL']
+                    result.append(config_data)
+    return result
+
+def anomaly_run(x):
+    x.run(single_run=True)
 
 @click.group()
 @click.option("--metric-port", default=8080, help="sets up metrics to publish to custom port")
@@ -74,19 +96,28 @@ def run(job_type: str, config_yaml: str, single_run: bool, tracing_enabled: bool
     :return: None
     """
     click.echo("Starting...")
-    config = Configuration(prefix=CONFIGURATION_PREFIX, config_yaml=config_yaml)
-    anomaly_detector = Facade(config=config, tracing_enabled=tracing_enabled)
-    click.echo("Created jobtype {}".format(job_type))
+    config_dicts = one_to_many_configs(config_yaml)
+    detectors = []
 
-    if job_type == "train":
-        click.echo("Performing training...")
-        anomaly_detector.train()
-    elif job_type == "inference":
-        click.echo("Perform inference...")
-        anomaly_detector.infer()
-    elif job_type == "all":
-        click.echo("Perform training and inference in loop...")
-        anomaly_detector.run(single_run=single_run)
+    for x in config_dicts:
+        config = Configuration(prefix=CONFIGURATION_PREFIX, config_dict=x)
+        detectors.append(Facade(config=config, tracing_enabled=tracing_enabled))
+
+    click.echo("Created jobtype {}".format(job_type))
+    pool = Pool(len(detectors))
+    pool.map(anomaly_run, detectors)
+    pool.close()
+    pool.join()
+
+    #if job_type == "train":
+    #    click.echo("Performing training...")
+    #    anomaly_detector.train()
+    #elif job_type == "inference":
+    #    click.echo("Perform inference...")
+    #    anomaly_detector.infer()
+    #elif job_type == "all":
+    #    click.echo("Perform training and inference in loop...")
+    #    anomaly_detector.run(single_run=single_run)
 
 
 if __name__ == "__main__":

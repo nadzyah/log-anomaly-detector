@@ -181,10 +181,14 @@ class Configuration:
         elif config_dict:   # is not None
             for prop in self.__class__.__dict__.keys():
                 attr = getattr(self, prop)
+                if prop == "LOGSOURCE_HOSTNAME":
+                    self.set_property("MODEL_DIR",
+                                      "/opt/anomaly_detector/models/" + config_dict[prop] + "/")
                 if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
                     attr()
                 elif prop.isupper() and prop in list(config_dict.keys()):
                     self.set_property(prop, config_dict[prop])
+            check_or_create_model_dir(self)
         else:
             self.storage = None
             if prefix:
