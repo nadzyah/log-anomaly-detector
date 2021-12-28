@@ -37,7 +37,7 @@ def one_to_many_configs(config_file):
         return result
     return [yaml_data]
 
-def anomaly_run(x, single_run=True):
+def anomaly_run(x, single_run=False):
     x.run(single_run=single_run)
 
 @click.group()
@@ -106,22 +106,11 @@ def run(job_type: str, config_yaml: str, single_run: bool, tracing_enabled: bool
         detectors.append(Facade(config=config, tracing_enabled=tracing_enabled))
 
     click.echo("Created jobtype {}".format(job_type))
-    pool = Pool(len(detectors))
+    pool = Pool()
     click.echo("Perform training and inference in loop...")
     pool.map(anomaly_run, detectors)
     pool.close()
     pool.join()
-
-    #if job_type == "train":
-    #    click.echo("Performing training...")
-    #    anomaly_detector.train()
-    #elif job_type == "inference":
-    #    click.echo("Perform inference...")
-    #    anomaly_detector.infer()
-    #elif job_type == "all":
-    #    click.echo("Perform training and inference in loop...")
-    #    anomaly_detector.run(single_run=single_run)
-
 
 if __name__ == "__main__":
     cli(auto_envvar_prefix="LAD")
