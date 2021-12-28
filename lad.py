@@ -24,8 +24,8 @@ def one_to_many_configs(config_file):
     with open(config_file, 'r') as f:
         yaml_data = yaml.safe_load(f)
         config_data = yaml_data.copy()
-        del config_data['LOG_SOURCES']
         if 'LOG_SOURCES' in yaml_data.keys():
+            del config_data['LOG_SOURCES']
             for input_col_name, input_info in yaml_data['LOG_SOURCES'].items():
                 for host in input_info['HOSTNAMES']:
                     config_data = config_data.copy()
@@ -33,9 +33,11 @@ def one_to_many_configs(config_file):
                     config_data['LOGSOURCE_HOSTNAME'] = host
                     config_data['MG_TARGET_COL'] = input_info['MG_TARGET_COL']
                     result.append(config_data)
-    return result
+    if result:
+        return result
+    return [yaml_data]
 
-def anomaly_run(x, single_run=False):
+def anomaly_run(x, single_run=True):
     x.run(single_run=single_run)
 
 @click.group()

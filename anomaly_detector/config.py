@@ -73,7 +73,8 @@ class Configuration:
     # Number of seconds specifying how far to the past to go to load log entries for training
     TRAIN_TIME_SPAN = 2592000
     # Maximum number of entries for training loaded from backend storage
-    TRAIN_MAX_ENTRIES = 315448
+    #TRAIN_MAX_ENTRIES = 315448
+    TRAIN_MAX_ENTRIES = 250000
     # Number of SOM training iterations
     TRAIN_ITERATIONS = 315448
     # If true, re-traing the models

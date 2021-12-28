@@ -1,8 +1,9 @@
 """LOF Model apapter - Working with custom implementation of LOF"""
 import logging
+from sklearn.preprocessing import MinMaxScaler
 from anomaly_detector.decorator.utils import latency_logger
 from anomaly_detector.adapters.base_model_adapter import BaseModelAdapter
-from anomaly_detector.model import W2VModel, LOFModel
+from anomaly_detector.model import W2VModel, LOFModel, AutoEncoderModel
 
 class LOFModelAdapter(BaseModelAdapter):
     """Local outlier factor custom logic to train model. Includes logic to train and predict anomalies in logs."""
@@ -54,6 +55,13 @@ class LOFModelAdapter(BaseModelAdapter):
         self.model.train(vectors, self.storage_adapter.LOF_NEIGHBORS,
                          self.storage_adapter.LOF_METRIC,
                          self.storage_adapter.PARALLELISM)
+
+        # AutoEncoder for model Ensebmling
+        min_max_scaler = MinMaxScaler(feature_range=(0, 1))
+        self.scaled_data = min_max_scaler.fit_transform(vectors.copy())
+        self.ae_model = AutoEncoderModel(output_units=self.scaled_data.shape[1])
+        self.ae_model.train(self.scaled_data)
+
         score_pairs = self.predict(vectors, json_logs)
         try:
             self.model.save(self.storage_adapter.LOF_MODEL_PATH)
@@ -66,16 +74,23 @@ class LOFModelAdapter(BaseModelAdapter):
     def predict(self, data, json_logs):
         """Predict from provided data and flag it an anomaly or not."""
         scores = self.process_scores(data)
+
+        ae_threshold = self.ae_model.find_threshold(self.scaled_data)
+        ae_pred, ae_errors = self.ae_model.get_predictions(self.scaled_data, ae_threshold)
+        ae_errors = list(map(float, ae_errors))
+
         f = []
         hist_count = 0
         logging.info("Max score: %f" % max([x[1] for x in scores]))
 
         for i in range(len(data)):
             s = json_logs[i]
-            if scores[i][0] == -1:
+            #if scores[i][0] == -1:
+            if ae_errors[i] > ae_threshold and scores[i][1] > 1:
                 s["anomaly"] = 1
-                s["anomaly_score"] = scores[i][1]
-                logging.warning("Anomaly found (score: %f): %s" % (scores[i][1], s["message"]))
+                s["anomaly_score"] = 0.5*(scores[i][1] + ae_errors[i])
+                logging.warning("Anomaly found (score: %f): %s" % (s["anomaly_score"],
+                                                                   s["message"]))
                 hist_count += 1
             else:
                 s["anomaly"] = 0

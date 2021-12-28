@@ -2,8 +2,8 @@
 
 STORAGE_DATASOURCE: local
 #LS_INPUT_PATH: "./validation_data/kvm1.lab.solidex.by.json"
-#LS_INPUT_PATH: "./validation_data/172.17.18.178.json"
-LS_INPUT_PATH: "./validation_data/solidex.by.json"
+LS_INPUT_PATH: "./validation_data/slx.json"
+#LS_INPUT_PATH: "./validation_data/solidex.by.json"
 
 STORAGE_DATASINK: stdout
 #STORAGE_DATASINK: mg
