@@ -10,7 +10,7 @@ REQUIRED_PKG = [
     "gensim==3.8.1",
     "matplotlib",
     "Cython==0.29.24",
-    "tensorflow=2.7.0",
+    "tensorflow==2.7.0",
     "numpy==1.21.4",
     "pandas==1.3.3",
     "prometheus_client",
