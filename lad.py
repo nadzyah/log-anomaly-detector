@@ -35,8 +35,8 @@ def one_to_many_configs(config_file):
                     result.append(config_data)
     return result
 
-def anomaly_run(x):
-    x.run(single_run=True)
+def anomaly_run(x, single_run=False):
+    x.run(single_run=single_run)
 
 @click.group()
 @click.option("--metric-port", default=8080, help="sets up metrics to publish to custom port")
@@ -105,6 +105,7 @@ def run(job_type: str, config_yaml: str, single_run: bool, tracing_enabled: bool
 
     click.echo("Created jobtype {}".format(job_type))
     pool = Pool(len(detectors))
+    click.echo("Perform training and inference in loop...")
     pool.map(anomaly_run, detectors)
     pool.close()
     pool.join()
