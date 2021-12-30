@@ -25,8 +25,8 @@ Changes from the original project:
 - [How it works](#how-it-works)
   * [The LAD daemon and Log aggregator](#the-lad-daemon-and-log-aggregator)
   * [Machine Learning Core](#machine-learning-core)
-    + [Word2Vec](#word2vec)
-    + [Anomaly detection](#anomaly-detection)
+      + [Word2Vec](#word2vec)
+      + [Anomaly detection](#anomaly-detection)
   * [MongoDB Schema Design](#mongodb-schema-design)
 
 # Installation
