@@ -4,8 +4,6 @@ from anomaly_detector.config import Configuration
 from anomaly_detector.facade import Facade
 import click
 import os
-import hashlib
-from getpass import getpass
 import yaml
 
 from multiprocessing import Pool, Process
@@ -29,9 +27,8 @@ def one_to_many_configs(config_file):
             for input_col_name, input_info in yaml_data['LOG_SOURCES'].items():
                 for host in input_info['HOSTNAMES']:
                     config_data = config_data.copy()
-                    config_data['MG_INPUT_COL'] = input_col_name
+                    config_data['MG_COLLECTION'] = input_col_name
                     config_data['LOGSOURCE_HOSTNAME'] = host
-                    config_data['MG_TARGET_COL'] = input_info['MG_TARGET_COL']
                     result.append(config_data)
     if result:
         return result
@@ -41,11 +38,9 @@ def anomaly_run(x, single_run=False):
     x.run(single_run=single_run)
 
 @click.group()
-@click.option("--metric-port", default=8080, help="sets up metrics to publish to custom port")
-def cli(metric_port: int):
+def cli():
     """Cli bootstrap method.
 
-    :param metric_port: 8080 by default and will start prometheus metrics endpoint
     :return: None
     """
     start_http_server(metric_port)

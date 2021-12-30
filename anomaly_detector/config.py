@@ -43,6 +43,7 @@ class Configuration:
 
     # Location of local data
     # A directory where trained models will be stored
+    MODEL_BASE_DIR = "./models/"
     MODEL_DIR = "./models/"
     MODE_DIR_CALLABLE = check_or_create_model_dir
     # Name of the file where SOM model will be stored
@@ -146,6 +147,8 @@ class Configuration:
     MG_PORT = 27017
     MG_USER = ""
     MG_PASSWORD = ""
+    MG_DB = ""
+    MG_COLLECTION = ""
     MG_INPUT_DB = ""
     MG_INPUT_COL = ""
     MG_TARGET_DB = ""
@@ -171,7 +174,7 @@ class Configuration:
                 yaml_data = yaml.load(f, Loader=yaml.FullLoader)
                 if "LOGSOURCE_HOSTNAME" in yaml_data.keys():
                     self.set_property("MODEL_DIR",
-                                      "/opt/anomaly_detector/models/" + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
+                                      self.MODEL_BASE_DIR + yaml_data["LOGSOURCE_HOSTNAME"] + "/")
                 for prop in self.__class__.__dict__.keys():
                     attr = getattr(self, prop)
                     if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
@@ -180,11 +183,13 @@ class Configuration:
                         self.set_property(prop, yaml_data[prop])
             check_or_create_model_dir(self)
         elif config_dict:   # is not None
+            if "MODEL_BASE_DIR" in config_dict.keys():
+                self.set_property("MODEL_BASE_DIR", config_dict["MODEL_BASE_DIR"])
+            if "LOGSOURCE_HOSTNAME" in config_dict.keys():
+                self.set_property("MODEL_DIR",
+                                  self.MODEL_BASE_DIR + config_dict["LOGSOURCE_HOSTNAME"] + "/")
             for prop in self.__class__.__dict__.keys():
                 attr = getattr(self, prop)
-                if prop == "LOGSOURCE_HOSTNAME":
-                    self.set_property("MODEL_DIR",
-                                      "/opt/anomaly_detector/models/" + config_dict[prop] + "/")
                 if prop.isupper() and prop.endswith("_CALLABLE") and callable(attr):
                     attr()
                 elif prop.isupper() and prop in list(config_dict.keys()):

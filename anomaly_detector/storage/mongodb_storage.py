@@ -7,6 +7,7 @@ import os
 from dateutil.parser import parse
 import logging
 from bson.json_util import dumps
+from bson.objectid import ObjectId
 from pandas.io.json import json_normalize
 import json
 from anomaly_detector.storage.storage import DataCleaner
@@ -54,12 +55,14 @@ class MongoDBStorage:
                 self.MG_URI,
                 tls=True,
                 tlsCAFile=self.config.MG_CA_CERT,
-                tlsAllowInvalidCertificates=self.config.MG_VERIFY_CERT
+                tlsAllowInvalidCertificates=self.config.MG_VERIFY_CERT,
+                maxPoolSize=1
             )
         else:
             _LOGGER.warning("Conecting to MongoDB without SSL/TLS encryption.")
             self.mg = MongoClient(
-                self.MG_URI
+                self.MG_URI,
+                maxPoolSize=1
             )
 
 
@@ -77,10 +80,10 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
     def retrieve(self, storage_attribute: MGStorageAttribute):
         """Retrieve data from MongoDB."""
 
-        mg_input_db = self.mg[self.config.MG_INPUT_DB]
+        mg_db = self.mg[self.config.MG_DB]
         now = datetime.datetime.now()
 
-        mg_data = mg_input_db[self.config.MG_INPUT_COL]
+        mg_data = mg_db[self.config.MG_COLLECTION]
 
         if self.config.LOGSOURCE_HOSTNAME != 'localhost':
             query = {
@@ -108,8 +111,6 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
             self.config.MG_HOST,
         )
 
-        self.mg.close()
-
         if not mg_data.count():   # if it equials 0:
             return pandas.DataFrame(), mg_data
 
@@ -119,6 +120,9 @@ class MongoDBDataStorageSource(StorageSource, DataCleaner, MongoDBStorage):
         _LOGGER.info("%d logs loaded in from last %d seconds", len(mg_data_normalized),
                      storage_attribute.time_range)
         self._preprocess(mg_data_normalized)
+
+        _LOGGER.info("Closing the connection to MongoDB")
+        self.mg.close()
 
         return mg_data_normalized, json.loads(mg_data)
 
@@ -135,32 +139,25 @@ class MongoDBDataSink(StorageSink, DataCleaner, MongoDBStorage):
 
     def store_results(self, data):
         """Store results back to MongoDB"""
-        mg_target_db = self.mg[self.config.MG_TARGET_DB]
-        mg_target_col = mg_target_db[self.config.MG_TARGET_COL]
-        normalized_data = []
+        mg_db = self.mg[self.config.MG_DB]
+        mg_col = mg_db[self.config.MG_COLLECTION]
         for x in data:
-            if x['anomaly']:
-                if '_id' in x.keys():
-                    del x['_id']
-                if 'e_message' in x.keys():
-                    del x['e_message']
-                if 'predict_id' in x.keys():
-                    del x['predict_id']
-                if 'predictor_namespace' in x.keys():
-                    del x['predictor_namespace']
-                if 'inference_batch_id' in x.keys():
-                    del x['inference_batch_id']
-                if 'elast_alert' in x.keys():
-                    del x['elast_alert']
-                if isinstance(x[self.config.DATETIME_INDEX], dict):
-                    date = x[self.config.DATETIME_INDEX]["$date"]
-                    if isinstance(date, int):
-                        x[self.config.DATETIME_INDEX] = (datetime.datetime.fromtimestamp(date / 1e3) - datetime.timedelta(hours=3))
-                    else:
-                        x[self.config.DATETIME_INDEX] = parse(date)
-                normalized_data.append(x)
-        if normalized_data:
-            _LOGGER.info("Inderting data to MongoDB.")
-            mg_target_col.insert_many(normalized_data)
-        else:
-            _LOGGER.info("No anomalies were detected.")
+            if x["anomaly"]:
+                mg_col.update_one({
+                    '_id': ObjectId(x['_id']['$oid'])
+                }, {
+                    "$set": {
+                        'is_anomaly': x['anomaly'],
+                        "anomaly_score": x["anomaly_score"]
+                    }
+                }, upsert=False)
+            else:
+                mg_col.update_one({
+                    '_id': ObjectId(x['_id']['$oid'])
+                }, {
+                    "$set": {
+                        'is_anomaly': x['anomaly'],
+                    }
+                }, upsert=False)
+        _LOGGER.info("Inserting data into MongoDB")
+        self.mg.close()
