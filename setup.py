@@ -33,11 +33,12 @@ REQUIRED_PKG = [
     "flask_sqlalchemy",
     "tornado==5.1.1",
     "pymongo==3.12.1",
+    "mysql-connector-python==8.0.27",
 ]
 
 setup(
     name="log-anomaly-detector",
-    version="0.4.2",
+    version="0.6.0",
     py_modules=['lad'],
     packages=find_packages(),
     setup_requires=["pytest-runner"],

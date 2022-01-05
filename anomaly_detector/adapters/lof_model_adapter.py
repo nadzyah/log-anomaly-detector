@@ -85,7 +85,6 @@ class LOFModelAdapter(BaseModelAdapter):
 
         for i in range(len(data)):
             s = json_logs[i]
-            #if scores[i][0] == -1:
             if ae_errors[i] > ae_threshold and scores[i][1] > 1:
                 s["anomaly"] = 1
                 s["anomaly_score"] = 0.5*(scores[i][1] + ae_errors[i])

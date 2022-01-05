@@ -153,6 +153,21 @@ class Configuration:
     MG_INPUT_COL = ""
     MG_TARGET_DB = ""
     MG_TARGET_COL = ""
+
+    # MySQL config
+    MYSQL_INPUT_HOST = "localhost"
+    MYSQL_INPUT_PORT = 3306
+    MYSQL_INPUT_DB = ""
+    MYSQL_INPUT_TABLE = ""
+    MYSQL_TARGET_HOST = "localhost"
+    MYSQL_TARGET_PORT = 3306
+    MYSQL_TARGET_DB = ""
+    MYSQL_TARGET_TABLE = ""
+    MYSQL_INPUT_USER = ""
+    MYSQL_INPUT_PASSWORD = ""
+    MYSQL_TARGET_USER = ""
+    MYSQL_TARGET_PASSWORD = ""
+
     HOSTNAME_INDEX = ""
     DATETIME_INDEX = ""
     MESSAGE_INDEX = ""

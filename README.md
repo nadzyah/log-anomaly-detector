@@ -6,7 +6,7 @@ Log anomaly detector is an open-source project that can connect to streaming sou
 
 Changes from the original project:
 - Python v3.8 support was added
-- MongoDB as a data source and data sink support was added
+- MongoDB and MySQL as a data source and data sink support was added
 - Run analysis in parallel for multiple hosts separately
 - UI and Prometheus support was removed
 - The usage of Word2Vec algorithm was improved
@@ -325,7 +325,7 @@ Additionally, anomaly logs are aggregated by [log-aggregator](http://git.solidex
 
 Then all the documents with original anomaly messages are updated with **aggregated_message_id** field. So there's a one-to-many relationship between aggregated log messages and original anomaly logs (many log messages are aggregated to one message)
 
-![Schema Design](./docs/db_schema.png)
+![Schema Design](./imgs/db_schema.png)
 
 Example of a not processed by LAD document from the collection, where original logs are stored:
 

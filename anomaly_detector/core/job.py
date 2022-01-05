@@ -139,9 +139,9 @@ class LOFInferenceJob(AbstractCommand):
         then = time.time()
         data, json_logs = self.model_adapter.preprocess(config_type="infer",
                                                         recreate_model=self.recreate_model)
-        #if not data: # If it's None
-        #    # Sleep 15 seconds if there's no new data
-        #    time.sleep(15)
+        if not data: # If it's None
+            # Sleep 15 seconds if there's no new data
+            time.sleep(15)
 
         logging.info("%d logs loaded from the last %d seconds", len(data),
                      self.model_adapter.storage_adapter.INFER_TIME_SPAN)

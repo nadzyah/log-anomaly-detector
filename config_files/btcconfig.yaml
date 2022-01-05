@@ -1,0 +1,43 @@
+STORAGE_DATASOURCE: mg
+STORAGE_DATASINK: mg
+MG_HOST: 192.168.103.230
+MG_PORT: 27017
+MG_USER: dbadmin
+MG_PASSWORD: au2HFwJ5Q2rmv
+MG_CA_CERT: /home/nadzya/Apps/log-anomaly-detector/config_files/LAD_CA.crt 
+MG_VERIFY_CERT: true
+MG_DB: logstoredb
+#MODEL_BASE_DIR: "/opt/anomaly_detector/models/"
+LOG_SOURCES:
+  "logs":
+    HOSTNAMES:
+      - archives.gov.by-s
+      - bgut.by
+      #- bks.gov.by-ssl_lo
+      #- brsm.grodno.by-ss
+      #- caa.gov.by
+      #- dc1-utm1-1
+      #- econom.edu.grodno
+      #- fk.archives.gov.b
+      #- ivje.gov.by
+      #- ivje.gov.by-ssl_l
+      #- komtsz.gov.by
+      #- komtsz.gov.by-ssl
+      #- korelichi.gov.by
+      #- mggci.by
+      #- mstislavl.mogilev
+      #- rmcollege.by-ssl_
+      #- rspch.by-ssl_log
+      #- school13.mogilev
+      #- trudgrodno.gov.by
+      #- volkovysk.grodno-
+      #- zelva.grodno-regi
+
+#PARALLELISM: 8
+#LOF_NEIGHBORS: 50
+#LOF_NEIGHBORS: 100
+
+MESSAGE_INDEX: message
+DATETIME_INDEX: received_at
+HOSTNAME_INDEX: hostname
+TRAIN_MAX_ENTRIES: 100000

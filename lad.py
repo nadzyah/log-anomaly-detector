@@ -27,14 +27,18 @@ def one_to_many_configs(config_file):
             for input_col_name, input_info in yaml_data['LOG_SOURCES'].items():
                 for host in input_info['HOSTNAMES']:
                     config_data = config_data.copy()
-                    config_data['MG_COLLECTION'] = input_col_name
+                    if config_data['STORAGE_DATASOURCE'] == 'mg':
+                        config_data['MG_COLLECTION'] = input_col_name
+                    if config_data['STORAGE_DATASOURCE'] == 'mysql':
+                        config_data["MYSQL_INPUT_TABLE"] = input_col_name
+                        config_data["MYSQL_TARGET_TABLE"] = yaml_data["LOG_SOURCES"][input_col_name]["MYSQL_TARGET_TABLE"]
                     config_data['LOGSOURCE_HOSTNAME'] = host
                     result.append(config_data)
     if result:
         return result
     return [yaml_data]
 
-def anomaly_run(x, single_run=False):
+def anomaly_run(x, single_run=True):
     x.run(single_run=single_run)
 
 @click.group()
@@ -101,7 +105,7 @@ def run(job_type: str, config_yaml: str, single_run: bool, tracing_enabled: bool
         detectors.append(Facade(config=config, tracing_enabled=tracing_enabled))
 
     click.echo("Created jobtype {}".format(job_type))
-    pool = Pool()
+    pool = Pool(len(detectors))
     click.echo("Perform training and inference in loop...")
     pool.map(anomaly_run, detectors)
     pool.close()
