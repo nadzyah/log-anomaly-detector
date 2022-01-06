@@ -38,7 +38,7 @@ def one_to_many_configs(config_file):
         return result
     return [yaml_data]
 
-def anomaly_run(x, single_run=True):
+def anomaly_run(x, single_run=False):
     x.run(single_run=single_run)
 
 @click.group()

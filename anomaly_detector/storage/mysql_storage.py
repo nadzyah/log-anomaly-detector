@@ -91,8 +91,8 @@ class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
         cursor.execute(sql)
         data = cursor.fetchall()
         json_data = []
-        tmp = {}
         for x in data:
+            tmp = {}
             tmp[self.config.MESSAGE_INDEX] = x[0]
             tmp[self.config.DATETIME_INDEX] = x[1]
             tmp[self.config.HOSTNAME_INDEX] = x[2]
@@ -117,7 +117,6 @@ class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
 
         cursor.close()
 
-        print(json_data_normalized[:200])
         return json_data_normalized, json_data
 
 class MySQLDataSink(StorageSink, DataCleaner, MySQLStorage):
@@ -141,7 +140,6 @@ class MySQLDataSink(StorageSink, DataCleaner, MySQLStorage):
                + ", anomaly_score) VALUES (%s, %s, %s, %s)"
                )
         normalized_data = []
-        tmp = []
         for x in data:
             if x["anomaly"]:
                 normalized_data.append((x[self.config.MESSAGE_INDEX],
