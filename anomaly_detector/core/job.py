@@ -136,24 +136,26 @@ class LOFInferenceJob(AbstractCommand):
         """Execute inference login for LOF with W2V encoding."""
         self.model_adapter.load_w2v_model()
         self.model_adapter.load_lof_model()
-        then = time.time()
-        data, json_logs = self.model_adapter.preprocess(config_type="infer",
+        while True:
+            then = time.time()
+            data, json_logs = self.model_adapter.preprocess(config_type="infer",
                                                         recreate_model=self.recreate_model)
-        if not data: # If it's None
-            # Sleep 15 seconds if there's no new data
-            time.sleep(15)
+            if not data:     # If it's None
+                # Sleep 15 seconds if there's no new data
+                time.sleep(15)
+                continue
 
-        logging.info("%d logs loaded from the last %d seconds", len(data),
-                     self.model_adapter.storage_adapter.INFER_TIME_SPAN)
-        results = self.model_adapter.predict(data, json_logs)
-        self.model_adapter.storage_adapter.persist_data(results)
-        now = time.time()
+            logging.info("%d logs loaded from the last %d seconds", len(data),
+                         self.model_adapter.storage_adapter.INFER_TIME_SPAN)
+            results = self.model_adapter.predict(data, json_logs)
+            self.model_adapter.storage_adapter.persist_data(results)
+            now = time.time()
 
-        if self.sleep:
-            logging.info("waiting for next minute to start...")
-            logging.info("press ctrl+c to stop process")
-            sleep_time = self.model_adapter.storage_adapter.INFER_TIME_SPAN - (now-then)
-            if sleep_time > 0:
-                time.sleep(sleep_time)
+            if self.sleep:
+                logging.info("waiting for next minute to start...")
+                logging.info("press ctrl+c to stop process")
+                sleep_time = self.model_adapter.storage_adapter.INFER_TIME_SPAN - (now-then)
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
 
-        return 0
+            return 0
