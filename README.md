@@ -329,7 +329,7 @@ Then all the documents with original anomaly messages are updated with **aggrega
 
 Example of a not processed by LAD document from the collection, where original logs are stored:
 
-```json
+```
 {
     _id: ObjectId("619e0b9a98144d569b67f23c"),
     message: '<182>Nov  1 19:27:49 dataform  45.146.164.110 - - [01/Nov/2021:19:27:49 +0300] "GET /wp-content/plugins/wp-file-manager/readme.txt HTTP/1.1" 302 483 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"',
@@ -341,7 +341,7 @@ Example of a not processed by LAD document from the collection, where original l
 
 Example of processed by LAD documents from the collection, where original logs are stored:
 
-```json
+```
 [{
     _id: ObjectId("61c47d2757ff236a202eafe6"),
     message: '<158>Dec 23 16:44:01 195-137-160-145 nginx-error 2021/12/23 16:43:58 [error] 30422#30422: *174745 open() "/var/www/solidex.by/public_html/favicon.ico" failed (2: No such file or directory), client: 195.38.23.9, server: , request: "GET /favicon.ico HTTP/1.1", host: "www.solidex.by", referrer: "http://www.solidex.by/wp-content/uploads/2017/07/DHCP_HA.pdf"',
@@ -365,7 +365,7 @@ Example of processed by LAD documents from the collection, where original logs a
 
 Example of a document from the collection, where aggregated messages are stored:
 
-```json
+```
 {
     _id: ObjectId("61cd4a619340d0730f34c564"),
     message: '<158>Dec *** *** 195-137-160-145 nginx-error *** *** [error] *** *** open() "/var/www/solidex.by/public_html/favicon.ico" failed (2: No such file or directory), client: *** server: , request: "GET /favicon.ico HTTP/1.1", host: "www.solidex.by", referrer: ***',
