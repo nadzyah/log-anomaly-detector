@@ -25,7 +25,7 @@ class MySQLStorage:
     def _connect(self, is_input):
         if is_input:
             _LOGGER.warning(
-                "Connection to MySQL at %s" % (self.config.MYSQL_INPUT_HOST)
+                "Connection to input MySQL server at %s" % (self.config.MYSQL_INPUT_HOST)
             )
             self.db = mysql.connector.connect(
                 host=self.config.MYSQL_INPUT_HOST,
@@ -34,9 +34,10 @@ class MySQLStorage:
                 password=self.config.MYSQL_INPUT_PASSWORD,
                 database=self.config.MYSQL_INPUT_DB
             )
+            self.db.start_transaction(isolation_level='READ COMMITTED')
             return
         _LOGGER.warning(
-                "Connection to MySQL at %s" % (self.config.MYSQL_TARGET_HOST)
+                "Connection to target MySQL server at %s" % (self.config.MYSQL_TARGET_HOST)
             )
         self.db = mysql.connector.connect(
             host=self.config.MYSQL_TARGET_HOST,
@@ -45,6 +46,7 @@ class MySQLStorage:
             password=self.config.MYSQL_TARGET_PASSWORD,
             database=self.config.MYSQL_TARGET_DB
         )
+        self.db.start_transaction(isolation_level='READ COMMITTED')
 
 class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
     """MySQL data source implementation."""
@@ -63,7 +65,7 @@ class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
         cursor = self.db.cursor()
 
         if self.config.LOGSOURCE_HOSTNAME:
-            sql = "SELECT %s, %s, %s FROM %s WHERE (%s BETWEEN '%s' AND '%s' AND %s = '%s') ORDER BY %s DESC LIMIT %d" % (
+            sql = "SELECT %s, %s, %s FROM %s WHERE (%s BETWEEN '%s' AND '%s') AND %s = '%s' ORDER BY %s DESC LIMIT %d" % (
                 self.config.MESSAGE_INDEX,
                 self.config.DATETIME_INDEX,
                 self.config.HOSTNAME_INDEX,
@@ -77,7 +79,7 @@ class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
                 storage_attribute.number_of_entries
             )
         else:
-            sql = "SELECT %s, %s FROM %s WHERE (%s BETWEEN %s AND %s) ORDER BY %s DESC LIMIT %d" % (
+            sql = "SELECT %s, %s FROM %s WHERE %s BETWEEN %s AND %s ORDER BY %s DESC LIMIT %d" % (
                 self.config.MESSAGE_INDEX,
                 self.config.DATETIME_INDEX,
                 self.config.MYSQL_INPUT_TABLE,
@@ -97,6 +99,7 @@ class MySQLDataStorageSource(StorageSource, DataCleaner, MySQLStorage):
             tmp[self.config.DATETIME_INDEX] = x[1]
             tmp[self.config.HOSTNAME_INDEX] = x[2]
             json_data.append(tmp)
+
 
         _LOGGER.info(
             "Reading %d log entries in last %d seconds from %s",

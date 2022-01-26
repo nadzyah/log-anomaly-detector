@@ -139,7 +139,7 @@ class LOFInferenceJob(AbstractCommand):
         while True:
             then = time.time()
             data, json_logs = self.model_adapter.preprocess(config_type="infer",
-                                                        recreate_model=self.recreate_model)
+                                                            recreate_model=self.recreate_model)
             if not data:     # If it's None
                 # Sleep 15 seconds if there's no new data
                 time.sleep(15)

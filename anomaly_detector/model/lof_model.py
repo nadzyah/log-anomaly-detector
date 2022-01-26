@@ -26,6 +26,8 @@ class LOFModel(BaseModel):
 
     def predict(self, logs):
         """Make inference according new logs"""
+        if isinstance(logs[0], float):
+            logs = [logs]
         preds = self.model.predict(logs)
         scores = abs(self.model.score_samples(logs))
         return list(zip(preds, scores))

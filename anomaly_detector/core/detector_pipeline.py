@@ -141,7 +141,9 @@ class DetectorPipelineCatalog(object):
         """Perform inference of LOF Model."""
         pipeline = DetectorPipeline()
         model_adapter = cls.create_lof_modeladapter(config)
-        pipeline.add_steps(LOFInferenceJob(model_adapter))
+        #pipeline.add_steps(LOFInferenceJob(model_adapter))
+        train = LOFTrainJob(model_adapter=model_adapter)
+        pipeline.add_steps(train)
         return pipeline
 
 
