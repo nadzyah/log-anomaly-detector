@@ -36,8 +36,8 @@ This installation process was tested on Ubuntu Server LTS 20.04, Python v3.8.10 
 
 This package can be installed as a pip module: 
 ```bash
-pip3 install git+ssh://git@git.solidex.minsk.by:2222/nhryshalevich/log-anomaly-detector
-pip3 install git+ssh://git@git.solidex.minsk.by:2222/nhryshalevich/log-aggregator
+pip3 install git+ssh://git@github.com/nadzyah/log-anomaly-detector
+pip3 install git+ssh://git@github.com/nadzyah/log-aggregator
 ```
 
 ## Step 2. Create a configuration file for LAD
