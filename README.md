@@ -2,13 +2,12 @@
 
 **This project is a fork of [https://github.com/AICoE/log-anomaly-detector/](https://github.com/AICoE/log-anomaly-detector/)**
 
-Log anomaly detector is an open-source project that can connect to streaming sources and produce predictions of abnormal log messages. Internally it uses unsupervised machine learning. We incorporate several machine learning models to achieve this result.
+Log anomaly detector is an open-source project that can connect to streaming sources and produce predictions of abnormal log messages. Internally it uses unsupervised machine learning. I incorporate several machine-learning models to achieve this result.
 
 Changes from the original project:
 - Python v3.8 support was added
 - MongoDB and MySQL as a data source and data sink support was added
 - Run analysis in parallel for multiple hosts separately
-- UI and Prometheus support was removed
 - The usage of Word2Vec algorithm was improved
 - The core ML algorithm (SOM) was replaced with ensemble learning of LOF and Autoencoder algorithms
 
@@ -43,7 +42,7 @@ pip3 install git+ssh://git@github.com/nadzyah/log-aggregator
 ## Step 2. Create a configuration file for LAD
 
 The configuration file is written in YAML syntax. The variables are explained [here](https://log-anomaly-detector.readthedocs.io/en/latest/configinfo.html)
-Since this version of LAD supports MongoDB and parallel multi-host running, there're some additional variables. We recommend to read the [MongoDB Schema Design]((#mongodb-schema-design)) part first.
+Since this version of LAD supports MongoDB and parallel multi-host running, there're some additional variables. I recommend reading the [MongoDB Schema Design]((#mongodb-schema-design)) part first.
 
 <table>
   <thead>
@@ -164,7 +163,7 @@ You can modify this file, keeping its stricture.
 
 ## Step 3. Configure log aggregation
 
-We also provide a script to aggregate anomaly logs. Check it [here](http://172.17.17.198:3000/nhryshalevich/log-aggregator) To configure it open `/opt/anomaly_detector/aggregator.yaml` file. See the example below:
+I also provide a script to aggregate anomaly logs. Check it [here](http://172.17.17.198:3000/nhryshalevich/log-aggregator) To configure it open `/opt/anomaly_detector/aggregator.yaml` file. See the example below:
 
 ```yaml
 STORAGE_DATASOURCE: mg
@@ -207,7 +206,7 @@ You must be already familiar with some of the options. See the description to th
   </tr>
   <tr>
     <td>MG_TARGET_DB</td>
-    <td>MongoDB datadase, where the aggregated logs should be pushed. Usually it's the same as MG_INPUT_DB, but we keep this option in case you want to store aggregated logs in separate DB</td>
+    <td>MongoDB datadase, where the aggregated logs should be pushed. Usually, it's the same as MG_INPUT_DB, but I keep this option in case you want to store aggregated logs in separate DB</td>
   </tr>
   <tr>
     <td>MG_INPUT_COLS</td>
@@ -260,7 +259,7 @@ After that LAD periodically checks the DB for new log entries. If the new entry 
 
 The daemon allows you to run LAD in the background and restart the LAD process to train the models with new log messages every midnight.
 
-The aggregation script is scheduled by cron and aggregates linguistically similar logs into one message. Each message is represented as a vector with the usage of Word2Vec library. Then we apply DBSCAN to find similar logs.  All different words and parameters in multiple log messages are substituted with `***` symbols. 
+The aggregation script is scheduled by cron and aggregates linguistically similar logs into one message. Each message is represented as a vector with the usage of Word2Vec library. Then I apply DBSCAN to find similar logs.  All different words and parameters in multiple log messages are substituted with `***` symbols. 
 
 ## Machine Learning Core
 
@@ -268,9 +267,9 @@ Read about the original ML Core here: [https://log-anomaly-detector.readthedocs.
 
 ### Word2Vec
 
-In this version of LAD we improved Word2Vec usage. In the original approach, each log message is considered as a word, but since W2V uses context to vectorize words, this approach gives us very strict similarities between logs. As the result, we have vectors that are initialized almost with random numbers, according to the Word2Vec algorithm.
+In this version of LAD I improved Word2Vec usage. In the original approach, each log message is considered as a word, but since W2V uses context to vectorize words, this approach gives us very strict similarities between logs. As the result, I have vectors that are initialized almost with random numbers, according to the Word2Vec algorithm.
 
-In our approach, we vectorize each word in each log message. Then to get one vector that represents a log message, we calculate the mean vector of all the vectors that represent words in the log message (the mean for each coordinate is calculated separately).
+In our approach, I vectorize each word in each log message. Then, to get one vector representing a log message, I calculate the mean vector of all the vectors representing words in the log message (the mean for each coordinate is calculated separately).
 
 For example, if a log message consists of the next words: "The login failed for user admin" and each word is represented by Word2Vec model the next way:
 
@@ -294,7 +293,7 @@ By default, the LAD developers use SOM algorithm for this task. Here we've switc
 
 ## MongoDB Schema Design
 
-We assume that originally logs are stored in a MongoDB collection and each document has the next fields:
+I assume that originally logs are stored in a MongoDB collection and each document has the next fields:
 
 - **_id** -- the ObjectId of your log message
 - **message** -- a string with the raw log message. This field may be named according to your choice, but the custom name of this field should be specified under MESSAGE_INDEX variable in a configuration file.
